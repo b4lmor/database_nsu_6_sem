@@ -1,0 +1,18 @@
+buildscript {
+    dependencies {
+        classpath 'org.postgresql:postgresql:42.7.5'
+        classpath 'org.flywaydb:flyway-database-postgresql:11.3.2'
+    }
+}
+
+plugins {
+    id 'org.flywaydb.flyway' version '11.3.2'
+}
+
+flyway {
+    url = project.properties['db.url']
+    user = project.properties['db.username']
+    password = project.properties['db.password']
+    locations = ['filesystem:scripts/migrations']
+    cleanDisabled = false
+}
