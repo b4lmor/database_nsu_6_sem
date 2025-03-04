@@ -1,8 +1,45 @@
-CREATE TABLE IF NOT EXISTS marketplace
+CREATE TYPE trading_point_type AS ENUM ('DEPARTMENT_STORE', 'SHOP', 'KIOSK', 'STALL');
+
+CREATE TABLE IF NOT EXISTS trading_point
 (
-    id    SERIAL PRIMARY KEY,
-    mtype VARCHAR(30) NOT NULL,
-    info  JSONB       NOT NULL
+    id           SERIAL PRIMARY KEY,
+    address      VARCHAR(120)       NOT NULL UNIQUE,
+    rent_payment NUMERIC(10, 2)     NOT NULL,
+    size         INTEGER            NOT NULL,
+    tp_type      trading_point_type NOT NULL,
+    tp_info_id   INTEGER            NOT NULL,
+
+    UNIQUE (tp_info_id, tp_type)
+);
+
+CREATE TABLE IF NOT EXISTS trading_point_info
+(
+    id               SERIAL PRIMARY KEY,
+    trading_point_id INTEGER     NOT NULL,
+    name             VARCHAR(50) NOT NULL,
+
+    UNIQUE (trading_point_id, name)
+);
+
+CREATE TABLE IF NOT EXISTS department_trading_point_info
+(
+    id               SERIAL PRIMARY KEY,
+    trading_point_id INTEGER     NOT NULL,
+    name             VARCHAR(50) NOT NULL,
+    department_id    INTEGER REFERENCES department (id),
+
+    UNIQUE (trading_point_id, name)
+);
+
+CREATE TABLE IF NOT EXISTS department
+(
+    id               SERIAL PRIMARY KEY,
+    trading_point_id INTEGER     NOT NULL,
+    name             VARCHAR(50) NOT NULL,
+    floor            INTEGER     NOT NULL,
+    manager_id       INTEGER     NOT NULL,
+
+    UNIQUE (trading_point_id, name)
 );
 
 CREATE TABLE IF NOT EXISTS vendor
@@ -12,7 +49,9 @@ CREATE TABLE IF NOT EXISTS vendor
 
 CREATE TABLE IF NOT EXISTS product
 (
-    article VARCHAR(40) PRIMARY KEY
+    article   VARCHAR(40) PRIMARY KEY,
+    name      VARCHAR(40),
+    photo_url VARCHAR(120)
 );
 
 CREATE TABLE IF NOT EXISTS employee
