@@ -2,20 +2,20 @@
 
 ## Сущности
 
-| №  | Имя таблицы            | Описание                                                                   |                                             |
-|----|------------------------|----------------------------------------------------------------------------|---------------------------------------------|
-| 1  | trading_point_building | Таблица для хранения информации о торговых точках.                         |                                             |
-| 2  | employee               | Таблица для хранения информации о сотрудниках.                             |                                             |
-| 3  | trading_point          | Таблица для хранения информации о торговых точках.                         |                                             |
-| 4  | department             | Таблица для хранения информации о департаментах.                           |                                             |
-| 6  | product                | Таблица для хранения информации о продуктах.                               |                                             |
-| 7  | product_supply         | Таблица для хранения информации о поставках продуктов.                     |                                             |
-| 8  | trading_point_product  | Таблица для хранения информации о продуктах, доступных в торговых точках.  |                                             |
-| 9  | sale                   | Таблица для хранения информации о продажах.                                |                                             |
-| 10 | client_info            | Таблица для хранения информации о клиентах.                                |                                             |
-| 12 | vendor                 | Таблица для хранения информации о поставщиках.                             |                                             |
-| 13 | vendor_product         | Таблица для хранения информации о продуктах, предоставляемых поставщиками. |                                             |
-| 14 | product_order          | Таблица для хранения информации о заказах продуктов.                       |                                             |
+| №  | Имя таблицы            | Описание                                                                   |                                             
+|----|------------------------|----------------------------------------------------------------------------|
+| 1  | trading_point_building | Таблица для хранения информации о торговых точках.                         |                                             
+| 2  | employee               | Таблица для хранения информации о сотрудниках.                             |                                             
+| 3  | trading_point          | Таблица для хранения информации о торговых точках.                         |                                             
+| 4  | department             | Таблица для хранения информации о департаментах.                           |                                             
+| 6  | product                | Таблица для хранения информации о продуктах.                               |                                             
+| 7  | product_supply         | Таблица для хранения информации о поставках продуктов.                     |                                             
+| 8  | trading_point_product  | Таблица для хранения информации о продуктах, доступных в торговых точках.  |                                             
+| 9  | sale                   | Таблица для хранения информации о продажах.                                |                                            
+| 10 | client_info            | Таблица для хранения информации о клиентах.                                |                                             
+| 12 | vendor                 | Таблица для хранения информации о поставщиках.                             |                                             
+| 13 | vendor_product         | Таблица для хранения информации о продуктах, предоставляемых поставщиками. |                                             
+| 14 | product_order          | Таблица для хранения информации о заказах продуктов.                       |                                             
 | 15 | product_order_details  | Таблица для хранения деталей заказов продуктов.                            |
 
 ## Сущности и атрибуты
@@ -193,7 +193,7 @@
 | tp_type | trading_point_type | NOT NULL         |
 | name    | VARCHAR(50)        | NOT NULL         |
 
-**Primary Key:**`id`  
+**Primary Key:**`id`
 
 **Foreign Keys:** Нет
 
@@ -212,7 +212,7 @@
 | hire_date        | DATE           | NOT NULL                                |
 | resignation_date | DATE           |                                         |
 
-**Primary Key:**`id`  
+**Primary Key:**`id`
 
 **Foreign Keys:**
 
@@ -233,7 +233,7 @@
 | rent_payment | NUMERIC(10, 2) | NOT NULL                               |
 | tp_size      | NUMERIC(10, 2) | NOT NULL                               |
 
-**Primary Key:**`id`  
+**Primary Key:**`id`
 
 **Foreign Keys:**
 
@@ -254,7 +254,7 @@
 | floor      | INTEGER     | NOT NULL                                         |
 | manager_id | INTEGER     | NOT NULL, REFERENCES employee (id)               |
 
-**Primary Key:**`id`  
+**Primary Key:**`id`
 
 **Foreign Keys:**
 
@@ -272,7 +272,7 @@
 | tp_id         | INTEGER | REFERENCES trading_point (id), UNIQUE |
 | department_id | INTEGER | REFERENCES department (id)            |
 
-**Primary Key:**`(tp_id, department_id)`  
+**Primary Key:**`(tp_id, department_id)`
 
 **Foreign Keys:**
 
@@ -291,7 +291,7 @@
 | description | TEXT        |             |
 | photo_url   | TEXT        |             |
 
-**Primary Key:**`article`  
+**Primary Key:**`article`
 
 **Foreign Keys:** Нет
 
@@ -307,7 +307,7 @@
 | sell_date       | TIMESTAMP      |                                        |
 | price           | NUMERIC(10, 2) | NOT NULL                               |
 
-**Primary Key:**`id`  
+**Primary Key:**`id`
 
 **Foreign Keys:**
 
@@ -323,7 +323,7 @@
 | tp_id           | INTEGER   | NOT NULL, REFERENCES trading_point (id) |
 | product_info_id | BIGINT    | NOT NULL, REFERENCES product_info (id)  |
 
-**Primary Key:**`id`  
+**Primary Key:**`id`
 
 **Foreign Keys:**
 
@@ -341,7 +341,7 @@
 | tp_id      | INTEGER   | NOT NULL, REFERENCES trading_point (id) |
 | created_at | TIMESTAMP | DEFAULT NOW()                           |
 
-**Primary Key:**`id`  
+**Primary Key:**`id`
 
 **Foreign Keys:**
 
@@ -356,7 +356,7 @@
 | sale_id | BIGINT | REFERENCES sale (id)                  |
 | tpp_id  | BIGINT | REFERENCES trading_point_product (id) |
 
-**Primary Key:**`(sale_id, tpp_id)`  
+**Primary Key:**`(sale_id, tpp_id)`
 
 **Foreign Keys:**
 
@@ -390,7 +390,7 @@
 | sale_id        | BIGINT | REFERENCES sale (id), UNIQUE |
 | client_info_id | BIGINT | REFERENCES client_info (id)  |
 
-**Primary Key:**`(sale_id, client_info_id)`  
+**Primary Key:**`(sale_id, client_info_id)`
 
 **Foreign Keys:**
 
@@ -408,9 +408,9 @@
 | name    | VARCHAR(50)  | NOT NULL    |
 | address | VARCHAR(120) | NOT NULL    |
 
-**Primary Key:**`id`  
+**Primary Key:**`id`
 
-**Foreign Keys:** Нет  
+**Foreign Keys:** Нет
 
 **Unique Constraint:**`(name, address)`
 
@@ -424,7 +424,7 @@
 | vendor_id       | INTEGER   | NOT NULL, REFERENCES vendor (id)       |
 | product_info_id | BIGINT    | NOT NULL, REFERENCES product_info (id) |
 
-**Primary Key:**`id`  
+**Primary Key:**`id`
 
 **Foreign Keys:**
 
@@ -447,7 +447,7 @@
 | confirm_date  | TIMESTAMP                 |                                         |
 | delivery_date | TIMESTAMP                 |                                         |
 
-**Primary Key:**`id`  
+**Primary Key:**`id`
 
 **Foreign Keys:**
 
@@ -467,7 +467,7 @@
 | product_id       | VARCHAR(60) | NOT NULL, REFERENCES product (article)  |
 | product_count    | INTEGER     | NOT NULL                                |
 
-**Primary Key:**`(product_order_id, product_id)`  
+**Primary Key:**`(product_order_id, product_id)`
 
 **Foreign Keys:**
 
