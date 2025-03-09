@@ -11,6 +11,7 @@ GRANT ALL PRIVILEGES ON employee TO manager;
 
 -- 3. trading_point
 GRANT SELECT ON trading_point TO employee;
+GRANT SELECT, UPDATE ON trading_point TO manager;
 
 -- 4. department
 GRANT SELECT ON department TO employee, manager;

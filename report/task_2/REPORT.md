@@ -24,7 +24,7 @@
 |---------------------------------|--------------|-------------|------------|
 | **trading_point_building**      | R            | R           | R          |           
 | **employee**                    |              | CRUD        |            |           
-| **trading_point**               | R            |             |            |           
+| **trading_point**               | R            | RU          |            |           
 | **department**                  | R            | R           |            |           
 | **department_to_trading_point** | R            | R           |            |           
 | **product**                     | R            | CRU         | CR         |           
@@ -32,14 +32,14 @@
 | **trading_point_product**       | RU           | CRUD        | R          |           
 | **sale**                        | CR           | CR          |            |           
 | **sale_to_tpp**                 | CR           | CR          |            |          
-| **client_info**                 | C(1)         | CRU         |            |           
+| **client_info**                 | CR(id)       | CRU         |            |           
 | **sale_to_client_info**         | CR           | CR          |            |           
 | **vendor**                      | R            | R           | CRU🔑      |           
 | **vendor_product**              | R            | R           | CRUD🔑     |           
 | **product_order**               | CR           | CRUD        | R🔑        |           
 | **product_order_details**       | CR           | CRUD        | R🔑        |
 
-- (1) - имеет возможность прочитать только id по email, full_name, phone и т.д.
+- R(id) - имеет возможность прочитать только id
 - 🔑 - доступ выдаётся только в соотв. со своим id
 
 ## Права на исполнение [запросов](../TASK.md)
