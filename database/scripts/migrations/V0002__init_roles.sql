@@ -104,4 +104,4 @@ ALTER TABLE employee ENABLE ROW LEVEL SECURITY;
 CREATE POLICY manager_employee_policy ON employee
     FOR ALL
     TO manager
-    USING (manager_id = (SELECT id FROM employee WHERE id = CURRENT_USER::INT));
+    USING (manager_id = CURRENT_USER::INT);
