@@ -97,3 +97,11 @@ CREATE POLICY product_order_details_policy ON product_order_details
     FOR ALL
     TO vendor
     USING (product_order_id IN (SELECT id FROM product_order WHERE vendor_id = CURRENT_USER::INT));
+
+-- 5. employee
+ALTER TABLE employee ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY manager_employee_policy ON employee
+    FOR ALL
+    TO manager
+    USING (manager_id = (SELECT id FROM employee WHERE manager_id = CURRENT_USER::INT));
