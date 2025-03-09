@@ -184,7 +184,9 @@
 
 [**SQL файл с созданием таблиц**](../../database/scripts/migrations/V0001__init_tables.sql)
 
-### `trading_point_building`
+---
+
+### **`trading_point_building`**
 
 | Атрибут | Тип                | Ограничения      |
 |---------|--------------------|------------------|
@@ -199,7 +201,7 @@
 
 ---
 
-### `employee`
+### **`employee`**
 
 | Атрибут          | Тип            | Ограничения                             |
 |------------------|----------------|-----------------------------------------|
@@ -209,7 +211,7 @@
 | tp_id            | INTEGER        | NOT NULL, REFERENCES trading_point (id) |
 | full_name        | VARCHAR(100)   | NOT NULL                                |
 | birth_date       | DATE           | NOT NULL                                |
-| hire_date        | DATE           | NOT NULL                                |
+| hire_date        | DATE           | NOT NULL, DEFAULT NOW()                 |
 | resignation_date | DATE           |                                         |
 
 **Primary Key:**`id`
@@ -222,7 +224,7 @@
 
 ---
 
-### `trading_point`
+### **`trading_point`**
 
 | Атрибут      | Тип            | Ограничения                            |
 |--------------|----------------|----------------------------------------|
@@ -244,7 +246,7 @@
 
 ---
 
-### `department`
+### **`department`**
 
 | Атрибут    | Тип         | Ограничения                                      |
 |------------|-------------|--------------------------------------------------|
@@ -265,7 +267,7 @@
 
 ---
 
-### `department_to_trading_point`
+### **`department_to_trading_point`**
 
 | Атрибут       | Тип     | Ограничения                           |
 |---------------|---------|---------------------------------------|
@@ -282,7 +284,7 @@
 
 ---
 
-### `product`
+### **`product`**
 
 | Атрибут     | Тип         | Ограничения |
 |-------------|-------------|-------------|
@@ -297,7 +299,7 @@
 
 ---
 
-### `product_info`
+### **`product_info`**
 
 | Атрибут         | Тип            | Ограничения                            |
 |-----------------|----------------|----------------------------------------|
@@ -315,13 +317,13 @@
 
 ---
 
-### `trading_point_product`
+### **`trading_point_product`**
 
-| Атрибут         | Тип       | Ограничения                             |
-|-----------------|-----------|-----------------------------------------|
-| id              | BIGSERIAL | PRIMARY KEY                             |
-| tp_id           | INTEGER   | NOT NULL, REFERENCES trading_point (id) |
-| product_info_id | BIGINT    | NOT NULL, REFERENCES product_info (id)  |
+| Атрибут         | Тип       | Ограничения                                              |
+|-----------------|-----------|----------------------------------------------------------|
+| id              | BIGSERIAL | PRIMARY KEY                                              |
+| tp_id           | INTEGER   | NOT NULL, REFERENCES trading_point (id)                  |
+| product_info_id | BIGINT    | NOT NULL, REFERENCES product_info (id) ON DELETE CASCADE |
 
 **Primary Key:**`id`
 
@@ -329,11 +331,11 @@
 
 - `tp_id`→`trading_point (id)`
 
-- `product_info_id`→`product_info (id)`
+- `product_info_id`→`product_info (id)`**ON DELETE CASCADE**
 
 ---
 
-### `sale`
+### **`sale`**
 
 | Атрибут    | Тип       | Ограничения                             |
 |------------|-----------|-----------------------------------------|
@@ -349,24 +351,24 @@
 
 ---
 
-### `sale_to_tpp`
+### **`sale_to_tpp`**
 
-| Атрибут | Тип    | Ограничения                           |
-|---------|--------|---------------------------------------|
-| sale_id | BIGINT | REFERENCES sale (id)                  |
-| tpp_id  | BIGINT | REFERENCES trading_point_product (id) |
+| Атрибут | Тип    | Ограничения                            |
+|---------|--------|----------------------------------------|
+| sale_id | BIGINT | REFERENCES sale (id) ON DELETE CASCADE |
+| tpp_id  | BIGINT | REFERENCES trading_point_product (id)  |
 
 **Primary Key:**`(sale_id, tpp_id)`
 
 **Foreign Keys:**
 
-- `sale_id`→`sale (id)`
+- `sale_id`→`sale (id)`**ON DELETE CASCADE**
 
 - `tpp_id`→`trading_point_product (id)`
 
 ---
 
-### `client_info`
+### **`client_info`**
 
 | Атрибут     | Тип           | Ограничения |
 |-------------|---------------|-------------|
@@ -377,18 +379,18 @@
 | weight      | NUMERIC(5, 2) |             |
 | specificity | TEXT          |             |
 
-**Primary Key:** `id`
+**Primary Key:**`id`
 
 **Foreign Keys:** Нет
 
 ---
 
-### `sale_to_client_info`
+### **`sale_to_client_info`**
 
-| Атрибут        | Тип    | Ограничения                  |
-|----------------|--------|------------------------------|
-| sale_id        | BIGINT | REFERENCES sale (id), UNIQUE |
-| client_info_id | BIGINT | REFERENCES client_info (id)  |
+| Атрибут        | Тип    | Ограничения                                   |
+|----------------|--------|-----------------------------------------------|
+| sale_id        | BIGINT | REFERENCES sale (id), UNIQUE                  |
+| client_info_id | BIGINT | REFERENCES client_info (id) ON DELETE CASCADE |
 
 **Primary Key:**`(sale_id, client_info_id)`
 
@@ -396,11 +398,11 @@
 
 - `sale_id`→`sale (id)`
 
-- `client_info_id`→`client_info (id)`
+- `client_info_id`→`client_info (id)`**ON DELETE CASCADE**
 
 ---
 
-### `vendor`
+### **`vendor`**
 
 | Атрибут | Тип          | Ограничения |
 |---------|--------------|-------------|
@@ -416,36 +418,36 @@
 
 ---
 
-### `vendor_product`
+### **`vendor_product`**
 
-| Атрибут         | Тип       | Ограничения                            |
-|-----------------|-----------|----------------------------------------|
-| id              | BIGSERIAL | PRIMARY KEY                            |
-| vendor_id       | INTEGER   | NOT NULL, REFERENCES vendor (id)       |
-| product_info_id | BIGINT    | NOT NULL, REFERENCES product_info (id) |
+| Атрибут         | Тип       | Ограничения                                              |
+|-----------------|-----------|----------------------------------------------------------|
+| id              | BIGSERIAL | PRIMARY KEY                                              |
+| vendor_id       | INTEGER   | NOT NULL, REFERENCES vendor (id) ON DELETE CASCADE       |
+| product_info_id | BIGINT    | NOT NULL, REFERENCES product_info (id) ON DELETE CASCADE |
 
 **Primary Key:**`id`
 
 **Foreign Keys:**
 
-- `vendor_id`→`vendor (id)`
+- `vendor_id`→`vendor (id)`**ON DELETE CASCADE**
 
-- `product_info_id`→`product_info (id)`
+- `product_info_id`→`product_info (id)`**ON DELETE CASCADE**
 
 ---
 
-### `product_order`
+### **`product_order`**
 
-| Атрибут       | Тип                       | Ограничения                             |
-|---------------|---------------------------|-----------------------------------------|
-| id            | BIGSERIAL                 | PRIMARY KEY                             |
-| manager_id    | INTEGER                   | REFERENCES employee (id)                |
-| vendor_id     | INTEGER                   | NOT NULL, REFERENCES vendor (id)        |
-| tp_id         | INTEGER                   | NOT NULL, REFERENCES trading_point (id) |
-| order_status  | product_order_status_type | NOT NULL, DEFAULT 'ORDERED'             |
-| create_date   | TIMESTAMP                 | NOT NULL, DEFAULT NOW()                 |
-| confirm_date  | TIMESTAMP                 |                                         |
-| delivery_date | TIMESTAMP                 |                                         |
+| Атрибут       | Тип                       | Ограничения                                         |
+|---------------|---------------------------|-----------------------------------------------------|
+| id            | BIGSERIAL                 | PRIMARY KEY                                         |
+| manager_id    | INTEGER                   | REFERENCES employee (id)                            |
+| vendor_id     | INTEGER                   | NOT NULL, REFERENCES vendor (id) ON DELETE SET NULL |
+| tp_id         | INTEGER                   | NOT NULL, REFERENCES trading_point (id)             |
+| order_status  | product_order_status_type | NOT NULL, DEFAULT 'ORDERED'                         |
+| create_date   | TIMESTAMP                 | NOT NULL, DEFAULT NOW()                             |
+| confirm_date  | TIMESTAMP                 |                                                     |
+| delivery_date | TIMESTAMP                 |                                                     |
 
 **Primary Key:**`id`
 
@@ -453,24 +455,24 @@
 
 - `manager_id`→`employee (id)`
 
-- `vendor_id`→`vendor (id)`
+- `vendor_id`→`vendor (id)`**ON DELETE SET NULL**
 
 - `tp_id`→`trading_point (id)`
 
 ---
 
-### `product_order_details`
+### **`product_order_details`**
 
-| Атрибут          | Тип         | Ограничения                             |
-|------------------|-------------|-----------------------------------------|
-| product_order_id | BIGINT      | NOT NULL, REFERENCES product_order (id) |
-| product_id       | VARCHAR(60) | NOT NULL, REFERENCES product (article)  |
-| product_count    | INTEGER     | NOT NULL                                |
+| Атрибут          | Тип         | Ограничения                                               |
+|------------------|-------------|-----------------------------------------------------------|
+| product_order_id | BIGINT      | NOT NULL, REFERENCES product_order (id) ON DELETE CASCADE |
+| product_id       | VARCHAR(60) | NOT NULL, REFERENCES product (article)                    |
+| product_count    | INTEGER     | NOT NULL                                                  |
 
 **Primary Key:**`(product_order_id, product_id)`
 
 **Foreign Keys:**
 
-- `product_order_id`→`product_order (id)`
+- `product_order_id`→`product_order (id)`**ON DELETE CASCADE**
 
 - `product_id`→`product (article)`

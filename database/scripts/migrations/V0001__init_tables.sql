@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS employee
     tp_id            INTEGER        NOT NULL, -- REFERENCES trading_point (id);
     full_name        VARCHAR(100)   NOT NULL,
     birth_date       DATE           NOT NULL,
-    hire_date        DATE           NOT NULL,
+    hire_date        DATE           NOT NULL DEFAULT NOW(),
     resignation_date DATE
 );
 
@@ -94,9 +94,9 @@ CREATE TABLE IF NOT EXISTS product_info
 
 CREATE TABLE IF NOT EXISTS trading_point_product
 (
-    id                BIGSERIAL PRIMARY KEY,
-    tp_id             INTEGER NOT NULL REFERENCES trading_point (id),
-    product_info_id BIGINT  NOT NULL REFERENCES product_info (id)
+    id              BIGSERIAL PRIMARY KEY,
+    tp_id           INTEGER NOT NULL REFERENCES trading_point (id),
+    product_info_id BIGINT  NOT NULL REFERENCES product_info (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS sale
@@ -106,9 +106,11 @@ CREATE TABLE IF NOT EXISTS sale
     created_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TABLE IF NOT EXISTS sale_to_tpp (
-    sale_id BIGINT REFERENCES sale(id),
-    tpp_id BIGINT REFERENCES trading_point_product(id),
+CREATE TABLE IF NOT EXISTS sale_to_tpp
+(
+    sale_id    BIGINT REFERENCES sale (id) ON DELETE CASCADE,
+    tpp_id     BIGINT REFERENCES trading_point_product (id),
+    sale_count INTEGER NOT NULL DEFAULT 1,
 
     PRIMARY KEY (sale_id, tpp_id)
 );
@@ -120,13 +122,15 @@ CREATE TABLE IF NOT EXISTS client_info
     birth_date  DATE,
     height      NUMERIC(4, 1),
     weight      NUMERIC(5, 2),
-    specificity TEXT
+    specificity TEXT,
+    phone       VARCHAR(15),
+    email       VARCHAR(50)
 );
 
 CREATE TABLE IF NOT EXISTS sale_to_client_info
 (
     sale_id        BIGINT REFERENCES sale (id) UNIQUE,
-    client_info_id BIGINT REFERENCES client_info (id),
+    client_info_id BIGINT REFERENCES client_info (id) ON DELETE CASCADE,
 
     PRIMARY KEY (sale_id, client_info_id)
 );
@@ -142,16 +146,16 @@ CREATE TABLE IF NOT EXISTS vendor
 
 CREATE TABLE IF NOT EXISTS vendor_product
 (
-    id                BIGSERIAL PRIMARY KEY,
-    vendor_id         INTEGER NOT NULL REFERENCES vendor (id),
-    product_info_id BIGINT  NOT NULL REFERENCES product_info (id)
+    id              BIGSERIAL PRIMARY KEY,
+    vendor_id       INTEGER REFERENCES vendor (id) ON DELETE CASCADE ,
+    product_info_id BIGINT  NOT NULL REFERENCES product_info (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS product_order
 (
     id            BIGSERIAL PRIMARY KEY,
     manager_id    INTEGER REFERENCES employee (id),
-    vendor_id     INTEGER                   NOT NULL REFERENCES vendor (id),
+    vendor_id     INTEGER                   REFERENCES vendor (id) ON DELETE SET NULL,
     tp_id         INTEGER                   NOT NULL REFERENCES trading_point (id),
     order_status  product_order_status_type NOT NULL DEFAULT 'ORDERED',
     create_date   TIMESTAMP                 NOT NULL DEFAULT NOW(),
@@ -161,9 +165,9 @@ CREATE TABLE IF NOT EXISTS product_order
 
 CREATE TABLE IF NOT EXISTS product_order_details
 (
-    product_order_id BIGINT      NOT NULL REFERENCES product_order (id),
-    product_id       VARCHAR(60) NOT NULL REFERENCES product (article),
+    product_order_id BIGINT      NOT NULL REFERENCES product_order (id) ON DELETE CASCADE,
+    product_article  VARCHAR(60) NOT NULL REFERENCES product (article),
     product_count    INTEGER     NOT NULL,
 
-    PRIMARY KEY (product_order_id, product_id)
+    PRIMARY KEY (product_order_id, product_article)
 );

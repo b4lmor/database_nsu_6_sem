@@ -11,6 +11,11 @@
 - [**Условие**](report/task_1/TODO.md)
 - [**Отчёт**](report/task_1/REPORT.md)
 
+#### Задание #2 "ПОЛЬЗОВАТЕЛИ И РОЛИ"
+
+- [**Условие**](report/task_2/TODO.md)
+- [**Отчёт**](report/task_2/REPORT.md)
+
 ## Структура проекта
 
 ### Модуль database
