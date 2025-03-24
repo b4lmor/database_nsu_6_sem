@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS employee
     id               SERIAL PRIMARY KEY,
     manager_id       INTEGER REFERENCES employee (id),
     job_title        job_title_type NOT NULL,
-    tp_id            INTEGER        NOT NULL, -- REFERENCES trading_point (id);
+    tp_id            INTEGER, -- REFERENCES trading_point (id);
     full_name        VARCHAR(100)   NOT NULL,
     birth_date       DATE           NOT NULL,
     hire_date        DATE           NOT NULL DEFAULT NOW(),
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS trading_point
 (
     id           SERIAL PRIMARY KEY,
     tpb_id       INTEGER REFERENCES trading_point_building (id),
-    manager_id   INTEGER        NOT NULL REFERENCES employee (id),
+    manager_id   INTEGER REFERENCES employee (id),
     name         VARCHAR(50)    NOT NULL,
     rent_payment NUMERIC(10, 2) NOT NULL,
     tp_size      NUMERIC(10, 2) NOT NULL,
@@ -147,8 +147,8 @@ CREATE TABLE IF NOT EXISTS vendor
 CREATE TABLE IF NOT EXISTS vendor_product
 (
     id              BIGSERIAL PRIMARY KEY,
-    vendor_id       INTEGER REFERENCES vendor (id) ON DELETE CASCADE ,
-    product_info_id BIGINT  NOT NULL REFERENCES product_info (id) ON DELETE CASCADE
+    vendor_id       INTEGER REFERENCES vendor (id) ON DELETE CASCADE,
+    product_info_id BIGINT NOT NULL REFERENCES product_info (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS product_order

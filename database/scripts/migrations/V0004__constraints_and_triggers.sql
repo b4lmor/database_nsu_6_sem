@@ -66,25 +66,7 @@ EXECUTE FUNCTION update_sell_date();
 
 -- 3. Триггер для проверки, что менеджер торговой точки является сотрудником
 
-CREATE OR REPLACE FUNCTION check_trading_point_manager()
-    RETURNS TRIGGER AS
-$$
-BEGIN
-    IF NOT EXISTS (SELECT 1
-                   FROM employee
-                   WHERE id = NEW.manager_id
-                     AND tp_id = NEW.id) THEN
-        RAISE EXCEPTION 'Manager must be an employee of the trading point';
-    END IF;
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_check_trading_point_manager
-    BEFORE INSERT OR UPDATE
-    ON trading_point
-    FOR EACH ROW
-EXECUTE FUNCTION check_trading_point_manager();
+-- REMOVED
 
 -- 4. Триггер для проверки, что отдел принадлежит зданию торговой точки
 
@@ -94,7 +76,7 @@ $$
 BEGIN
     IF NOT EXISTS (SELECT 1
                    FROM trading_point_building
-                   WHERE id = NEW.tpb_id
+                   WHERE id = (SELECT tpb_id FROM department WHERE id = NEW.department_id)
                      AND id = (SELECT tpb_id FROM trading_point WHERE id = NEW.tp_id)) THEN
         RAISE EXCEPTION 'Department must belong to the same building as the trading point';
     END IF;

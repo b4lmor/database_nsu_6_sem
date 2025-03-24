@@ -1,0 +1,3 @@
+article,name,description,photo_url
+12345,"Товар 1","Описание товара 1","http://example.com/photo1.jpg"
+67890,"Товар 2","Описание товара 2","http://example.com/photo2.jpg"
