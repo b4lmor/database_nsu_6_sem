@@ -1,3 +1,4 @@
 rootProject.name = 'db_project'
 
 include 'database'
+include 'service'

@@ -1,0 +1,5 @@
+id,employee_id,tp_id,job_title,start_date,end_date,salary
+1,1,1,MANAGER,1980-01-01,,15000.00
+2,2,2,CASHIER,1981-01-01,,5000.00
+3,3,1,CASHIER,1982-01-01,,7000.00
+4,4,2,MANAGER,1983-01-01,,15000.00

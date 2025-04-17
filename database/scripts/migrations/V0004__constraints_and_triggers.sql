@@ -22,6 +22,10 @@ ALTER TABLE product_order
             (delivery_date IS NULL OR (confirm_date IS NOT NULL AND delivery_date >= confirm_date))
             );
 
+ALTER TABLE job
+    ADD CONSTRAINT valid_dates CHECK (end_date IS NULL OR end_date > start_date),
+    ADD CONSTRAINT positive_salary CHECK (salary > 0);
+
 -- 1. Триггер для автоматического обновления статуса заказа
 
 CREATE OR REPLACE FUNCTION update_order_status()
@@ -64,11 +68,7 @@ CREATE TRIGGER trg_update_sell_date
     FOR EACH ROW
 EXECUTE FUNCTION update_sell_date();
 
--- 3. Триггер для проверки, что менеджер торговой точки является сотрудником
-
--- REMOVED
-
--- 4. Триггер для проверки, что отдел принадлежит зданию торговой точки
+-- 3. Триггер для проверки, что отдел принадлежит зданию торговой точки
 
 CREATE OR REPLACE FUNCTION check_department_building()
     RETURNS TRIGGER AS
@@ -90,7 +90,7 @@ CREATE TRIGGER trg_check_department_building
     FOR EACH ROW
 EXECUTE FUNCTION check_department_building();
 
--- 5. Триггер для проверки, что поставщик имеет достаточное кол-во товара
+-- 4. Триггер для проверки, что поставщик имеет достаточное кол-во товара
 
 CREATE OR REPLACE FUNCTION check_vendor_product_availability()
     RETURNS TRIGGER AS
@@ -125,7 +125,7 @@ CREATE TRIGGER trg_check_vendor_product_availability
     FOR EACH ROW
 EXECUTE FUNCTION check_vendor_product_availability();
 
--- 6. Триггер для проверки, что ТП, привязанная к секции - часть универмага
+-- 5. Триггер для проверки, что ТП, привязанная к секции - часть универмага
 
 CREATE OR REPLACE FUNCTION check_tp_is_department_store()
     RETURNS TRIGGER AS
@@ -148,3 +148,6 @@ CREATE TRIGGER trg_check_tp_is_department_store
     ON department_to_trading_point
     FOR EACH ROW
 EXECUTE FUNCTION check_tp_is_department_store();
+
+-- 6. Триггер для проверки, что ТП, привязанная к секции - часть универмага
+

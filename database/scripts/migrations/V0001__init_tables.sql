@@ -32,12 +32,9 @@ CREATE TABLE IF NOT EXISTS trading_point_building
 CREATE TABLE IF NOT EXISTS employee
 (
     id               SERIAL PRIMARY KEY,
-    manager_id       INTEGER REFERENCES employee (id),
-    job_title        job_title_type NOT NULL,
-    tp_id            INTEGER, -- REFERENCES trading_point (id);
-    full_name        VARCHAR(100)   NOT NULL,
-    birth_date       DATE           NOT NULL,
-    hire_date        DATE           NOT NULL DEFAULT NOW(),
+    full_name        VARCHAR(100) NOT NULL,
+    birth_date       DATE         NOT NULL,
+    hire_date        DATE         NOT NULL DEFAULT NOW(),
     resignation_date DATE
 );
 
@@ -53,8 +50,16 @@ CREATE TABLE IF NOT EXISTS trading_point
     UNIQUE (tpb_id, name)
 );
 
-ALTER TABLE IF EXISTS employee
-    ADD CONSTRAINT fk_employee_tp FOREIGN KEY (tp_id) REFERENCES trading_point (id);
+CREATE TABLE IF NOT EXISTS job
+(
+    id          SERIAL PRIMARY KEY,
+    employee_id INTEGER REFERENCES employee (id),
+    tp_id       INTEGER REFERENCES trading_point (id),
+    job_title   job_title_type NOT NULL,
+    start_date  DATE           NOT NULL DEFAULT NOW(),
+    end_date    DATE,
+    salary      NUMERIC(10, 2) NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS department
 (

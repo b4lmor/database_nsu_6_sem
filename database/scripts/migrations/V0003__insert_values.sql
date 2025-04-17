@@ -3,64 +3,20 @@ COPY trading_point_building (id, address, tp_type, name)
     FROM '/volumes/trading_point_building.csv'
     WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
--- Временная таблица для employee
-CREATE TEMP TABLE temp_employee
-(
-    id               INTEGER PRIMARY KEY,
-    manager_id       INTEGER,
-    job_title        VARCHAR(50),
-    tp_id            INTEGER,
-    full_name        VARCHAR(100),
-    birth_date       DATE,
-    hire_date        DATE,
-    resignation_date DATE
-);
-
--- Временная таблица для trading_point
-CREATE TEMP TABLE temp_trading_point
-(
-    id           INTEGER PRIMARY KEY,
-    tpb_id       INTEGER,
-    manager_id   INTEGER,
-    name         VARCHAR(50),
-    rent_payment NUMERIC(10, 2),
-    tp_size      NUMERIC(10, 2)
-);
-
 -- Заполнение таблицы employee
-COPY temp_employee (id, manager_id, job_title, tp_id, full_name, birth_date, hire_date, resignation_date)
+COPY employee (id, full_name, birth_date, hire_date, resignation_date)
     FROM '/volumes/employee.csv'
     WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
 -- Заполнение таблицы trading_point
-COPY temp_trading_point (id, tpb_id, manager_id, name, rent_payment, tp_size)
+COPY trading_point (id, tpb_id, manager_id, name, rent_payment, tp_size)
     FROM '/volumes/trading_point.csv'
     WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
--- Вставка данных в employee без tp_id
-INSERT INTO employee (id, job_title, full_name, birth_date, hire_date, resignation_date)
-SELECT id, job_title::job_title_type, full_name, birth_date, hire_date, resignation_date
-FROM temp_employee;
-
--- Вставка данных в trading_point без manager_id
-INSERT INTO trading_point (id, tpb_id, name, rent_payment, tp_size)
-SELECT id, tpb_id, name, rent_payment, tp_size
-FROM temp_trading_point;
-
--- Обновление trading_point для установки manager_id
-UPDATE trading_point
-SET manager_id = temp.manager_id
-FROM temp_trading_point temp
-WHERE trading_point.id = temp.id;
-
--- Обновление employee для установки tp_id
-UPDATE employee
-SET tp_id = temp.tp_id
-FROM temp_employee temp
-WHERE employee.id = temp.id;
-
-DROP TABLE IF EXISTS temp_employee;
-DROP TABLE IF EXISTS temp_trading_point;
+-- Заполнение таблицы temp_job
+COPY job (id, employee_id, tp_id, job_title, start_date, end_date, salary)
+    FROM '/volumes/job.csv'
+    WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
 -- Заполнение таблицы department
 COPY department (id, tpb_id, name, floor, manager_id)

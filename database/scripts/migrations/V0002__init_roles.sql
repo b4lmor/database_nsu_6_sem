@@ -67,15 +67,18 @@ GRANT SELECT ON product_order_details TO vendor;
 -- Row-Level Security для таблиц с ограничением по ID
 
 -- 1. vendor
-ALTER TABLE vendor ENABLE ROW LEVEL SECURITY;
+ALTER TABLE vendor
+    ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY vendor_policy ON vendor
     FOR ALL
     TO vendor
-    USING (id = CURRENT_USER::INT);  -- имя роли совпадает с ID поставщика
+    USING (id = CURRENT_USER::INT);
+-- имя роли совпадает с ID поставщика
 
 -- 2. vendor_product
-ALTER TABLE vendor_product ENABLE ROW LEVEL SECURITY;
+ALTER TABLE vendor_product
+    ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY vendor_product_policy ON vendor_product
     FOR ALL
@@ -83,7 +86,8 @@ CREATE POLICY vendor_product_policy ON vendor_product
     USING (vendor_id = CURRENT_USER::INT);
 
 -- 3. product_order
-ALTER TABLE product_order ENABLE ROW LEVEL SECURITY;
+ALTER TABLE product_order
+    ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY product_order_policy ON product_order
     FOR ALL
@@ -91,17 +95,26 @@ CREATE POLICY product_order_policy ON product_order
     USING (vendor_id = CURRENT_USER::INT);
 
 -- 4. product_order_details
-ALTER TABLE product_order_details ENABLE ROW LEVEL SECURITY;
+ALTER TABLE product_order_details
+    ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY product_order_details_policy ON product_order_details
     FOR ALL
     TO vendor
-    USING (product_order_id IN (SELECT id FROM product_order WHERE vendor_id = CURRENT_USER::INT));
+    USING (product_order_id IN (SELECT id
+                                FROM product_order
+                                WHERE vendor_id = CURRENT_USER::INT));
 
 -- 5. employee
-ALTER TABLE employee ENABLE ROW LEVEL SECURITY;
+ALTER TABLE employee
+    ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY manager_employee_policy ON employee
     FOR ALL
-    TO manager
-    USING (manager_id = CURRENT_USER::INT);
+    USING (
+    EXISTS (SELECT 1
+            FROM job
+                     JOIN employee AS manager ON job.employee_id = manager.id
+            WHERE manager.id = CURRENT_USER::INT
+              AND job.job_title = 'MANAGER'::job_title_type
+              AND (job.end_date IS NULL OR job.end_date > CURRENT_DATE)));
