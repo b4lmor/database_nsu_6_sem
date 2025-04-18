@@ -12,11 +12,15 @@ import ru.nsu.ccfit.lisitsin.entity.Identical;
 import ru.nsu.ccfit.lisitsin.forms.DefaultForm;
 import ru.nsu.ccfit.lisitsin.forms.DeleteForm;
 import ru.nsu.ccfit.lisitsin.forms.EditForm;
+import ru.nsu.ccfit.lisitsin.forms.FormBuilder;
+import ru.nsu.ccfit.lisitsin.forms.ObjectViewForm;
 import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class TableView<T extends Identical> extends VerticalLayout {
@@ -36,6 +40,10 @@ public abstract class TableView<T extends Identical> extends VerticalLayout {
     protected HorizontalLayout filterLayout;
 
     protected ContextMenu contextMenu;
+
+    protected T selectedItem;
+
+    protected Grid.Column<T> selectedColumn;
 
     public TableView(Class<T> entityClass, GenericRepository<T> genericRepository) {
         this.entityClass = entityClass;
@@ -75,26 +83,68 @@ public abstract class TableView<T extends Identical> extends VerticalLayout {
         contextMenu.setTarget(grid);
 
         contextMenu.addItem("Изменить", e -> {
-            T selectedItem = grid.asSingleSelect().getValue();
             if (selectedItem != null) {
                 showEditForm(selectedItem);
             }
         });
 
         contextMenu.addItem("Удалить", e -> {
-            T selectedItem = grid.asSingleSelect().getValue();
             if (selectedItem != null) {
                 showDeleteForm(selectedItem);
             }
         });
 
+        contextMenu.addItem("Посмотреть ссылку", e -> {
+            if (selectedColumn != null) {
+                Arrays.stream(entityClass.getDeclaredFields())
+                        .filter(f -> f.isAnnotationPresent(ColumnViewName.class) && f.isAnnotationPresent(LinkTableView.class))
+                        .filter(f -> f.getAnnotation(ColumnViewName.class).value().equals(selectedColumn.getHeaderText()))
+                        .findFirst()
+                        .ifPresentOrElse(
+                                field -> {
+                                    field.setAccessible(true);
+
+                                    Object value = ReflectionUtils.getField(field, selectedItem);
+                                    LinkTableView linkTableView = field.getAnnotation(LinkTableView.class);
+
+                                    Object linkedObject = genericRepository.findByField(
+                                            linkTableView.linkClass(),
+                                            linkTableView.joinColumn(),
+                                            value
+                                    );
+
+                                    if (linkedObject != null) {
+                                        new ObjectViewForm<>(linkTableView.linkClass(), linkedObject).open();
+
+                                    } else {
+                                        throw new RuntimeException("Объект не найден");
+                                    }
+                                },
+                                () -> {
+                                    throw new RuntimeException("Поле не является внешним ключом");
+                                }
+                        );
+            }
+        });
+
         contextMenu.setOpenOnClick(true);
 
-        grid.addItemClickListener(event -> grid.asSingleSelect().setValue(event.getItem()));
+        grid.addItemClickListener(event -> {
+            grid.asSingleSelect().setValue(event.getItem());
+            selectedItem = grid.asSingleSelect().getValue();
+            selectedColumn = event.getColumn();
+        });
     }
 
     protected void showEditForm(T item) {
-        new EditForm<>(entityClass, item).open();
+        new EditForm<>(
+                entityClass,
+                item,
+                params -> {
+                    genericRepository.update(params);
+                    refreshData();
+                }
+        ).open();
     }
 
     protected void showDeleteForm(T item) {
@@ -102,7 +152,7 @@ public abstract class TableView<T extends Identical> extends VerticalLayout {
                 entityClass,
                 item,
                 () -> {
-                    genericRepository.delete(item.getId());
+                    genericRepository.delete(item.getIds(), item.getIdColumns());
                     refreshData();
                 }
         ).open();

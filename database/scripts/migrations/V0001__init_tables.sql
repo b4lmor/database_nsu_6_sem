@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS department
     tpb_id     INTEGER     NOT NULL REFERENCES trading_point_building (id),
     name       VARCHAR(50) NOT NULL,
     floor      INTEGER     NOT NULL,
-    manager_id INTEGER     NOT NULL REFERENCES employee (id),
+    manager_id INTEGER     REFERENCES employee (id),
 
     UNIQUE (tpb_id, name)
 );

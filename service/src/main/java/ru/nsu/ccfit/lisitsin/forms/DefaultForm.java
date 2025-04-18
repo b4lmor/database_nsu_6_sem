@@ -4,7 +4,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import ru.nsu.ccfit.lisitsin.tableview.FormBuilder;
 
 public class DefaultForm extends Dialog {
 

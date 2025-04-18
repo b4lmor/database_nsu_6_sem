@@ -4,32 +4,41 @@ import com.vaadin.flow.component.AbstractSinglePropertyField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.textfield.TextField;
+import jakarta.persistence.Column;
 import org.springframework.util.ReflectionUtils;
-import ru.nsu.ccfit.lisitsin.tableview.FormBuilder;
 import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class EditForm<T> extends DefaultForm {
 
-    public EditForm(Class<T> targetClass, T item) {
-        super(getForm(targetClass, item));
+    public EditForm(Class<T> targetClass, T item, Consumer<List<Object>> updateConsumer) {
+        super(getForm(targetClass, item, updateConsumer));
     }
 
-    private static <T> FormBuilder getForm(Class<T> targetClass, T item) {
+    private static <T> FormBuilder getForm(Class<T> targetClass, T item, Consumer<List<Object>> updateConsumer) {
         return (form, dialog) -> {
+            Map<String, Supplier<Object>> fields = new LinkedHashMap<>();
+
             ReflectionUtils.doWithFields(
                     targetClass,
                     field -> {
                         ColumnViewName annotation = field.getAnnotation(ColumnViewName.class);
-                        if (annotation != null && annotation.isVisible()) {
+                        Column originalColumnAnnotation = field.getAnnotation(Column.class);
+                        if (annotation != null && annotation.isVisible() && originalColumnAnnotation != null) {
                             var component = getComponent(field, annotation.value(), item);
 
                             if (!annotation.isEditable()) {
                                 component.setReadOnly(true);
                             }
 
+                            fields.put(originalColumnAnnotation.name(), component::getValue);
                             form.add(component);
                         }
                     }
@@ -38,6 +47,7 @@ public class EditForm<T> extends DefaultForm {
             Button saveButton = new Button(
                     "Сохранить",
                     e -> {
+                        updateConsumer.accept(fields.values().stream().map(Supplier::get).toList());
                         dialog.close();
                     }
             );

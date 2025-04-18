@@ -8,32 +8,41 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
 import ru.nsu.ccfit.lisitsin.utils.TableViewName;
 
-@TableViewName("Здания торговой точки")
+import java.util.List;
+
+@TableViewName("Здания торговых точек")
 @Getter
 @Setter
 @Entity
 @Table(name = "trading_point_building")
-public class TradingPointBuilding {
+public class TradingPointBuilding implements Identical {
+
+    @ColumnViewName("ID")
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @ColumnViewName("Адрес")
     @Size(max = 120)
     @NotNull
     @Column(name = "address", nullable = false, length = 120)
     private String address;
 
+    @ColumnViewName("Название")
     @Size(max = 50)
     @NotNull
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-/*
- TODO [Reverse Engineering] create field to map the 'tp_type' column
- Available actions: Define target Java type | Uncomment as is | Remove column mapping
-    @Column(name = "tp_type", columnDefinition = "trading_point_type not null")
-    private Object tpType;
-*/
+    @ColumnViewName("Тип")
+    @Column(name = "tp_type")
+    private String tpType;
+
+    public List<Object> getIds() {
+        return List.of(id);
+    }
+
 }

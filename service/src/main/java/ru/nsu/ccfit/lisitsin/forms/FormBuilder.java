@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.lisitsin.tableview;
+package ru.nsu.ccfit.lisitsin.forms;
 
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.formlayout.FormLayout;

@@ -1,34 +1,43 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
+import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
 import ru.nsu.ccfit.lisitsin.utils.TableViewName;
 
-@TableViewName(isVisible = false)
+import java.util.List;
+
+@TableViewName("Секции торговых точек")
 @Getter
 @Setter
 @Entity
 @Table(name = "department_to_trading_point")
-public class DepartmentToTradingPoint {
-    @EmbeddedId
-    private DepartmentToTradingPointId id;
+public class DepartmentToTradingPoint implements Identical {
 
-    @MapsId("tpId")
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "tp_id", nullable = false)
-    private TradingPoint tp;
+    @LinkTableView(linkClass = TradingPoint.class)
+    @ColumnViewName("ID Торговой точки")
+    @Id
+    @Column(name = "tp_id", nullable = false)
+    private Integer tpId;
 
-    @MapsId("departmentId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "department_id", nullable = false)
-    private Department department;
+    @LinkTableView(linkClass = Department.class)
+    @ColumnViewName("ID Секции")
+    @Id
+    @Column(name = "department_id", nullable = false)
+    private Integer departmentId;
 
+    @Override
+    public List<Object> getIds() {
+        return List.of(tpId, departmentId);
+    }
+
+    @Override
+    public List<String> getIdColumns() {
+        return List.of("tp_id", "department_id");
+    }
 }

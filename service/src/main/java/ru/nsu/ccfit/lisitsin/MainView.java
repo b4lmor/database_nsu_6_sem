@@ -15,8 +15,6 @@ import java.util.Set;
 @Route("")
 public class MainView extends HorizontalLayout {
 
-    private final Div content = new Div();
-
     public MainView() {
         setSizeFull();
         setSpacing(false);
@@ -33,9 +31,11 @@ public class MainView extends HorizontalLayout {
                 .set("background", "var(--lumo-contrast-5pct)");
 
         H2 menuHeader = new H2("Торговая организация Trado");
+
         menuHeader.getStyle()
                 .set("margin", "0 auto")
                 .set("padding", "1em");
+
         sideMenu.add(menuHeader);
 
         Set<Class<?>> entityClasses = new Reflections("ru.nsu.ccfit.lisitsin.entity")
@@ -55,8 +55,7 @@ public class MainView extends HorizontalLayout {
                 button.addClickListener(event -> {
                     sideMenu.getChildren()
                             .filter(component -> component instanceof Button)
-                            .forEach(component -> component.getStyle()
-                                    .remove("background-color"));
+                            .forEach(component -> component.getStyle().remove("background-color"));
 
                     button.getStyle().set("background-color", "var(--lumo-primary-color-10pct)");
 
@@ -67,11 +66,13 @@ public class MainView extends HorizontalLayout {
             }
         });
 
+        Div content = new Div();
+
         content.setSizeFull();
-        content.getStyle()
-                .set("padding", "1em");
+        content.getStyle().set("padding", "1em");
 
         add(sideMenu, content);
         setFlexGrow(1, content);
+
     }
 }

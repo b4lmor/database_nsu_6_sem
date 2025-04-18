@@ -3,7 +3,6 @@ package ru.nsu.ccfit.lisitsin.forms;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.util.ReflectionUtils;
-import ru.nsu.ccfit.lisitsin.tableview.FormBuilder;
 import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
 
 import java.lang.reflect.Field;

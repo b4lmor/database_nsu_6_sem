@@ -12,6 +12,7 @@ import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
 import ru.nsu.ccfit.lisitsin.utils.TableViewName;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @TableViewName("Сотрудники")
 @Getter
@@ -45,8 +46,8 @@ public class Employee implements Identical {
     @Column(name = "resignation_date")
     private LocalDate resignationDate;
 
-    public Long getId() {
-        return (long) id;
+    public List<Object> getIds() {
+        return List.of(id);
     }
 
 }

@@ -149,5 +149,46 @@ CREATE TRIGGER trg_check_tp_is_department_store
     FOR EACH ROW
 EXECUTE FUNCTION check_tp_is_department_store();
 
--- 6. Триггер для проверки, что ТП, привязанная к секции - часть универмага
+-- 6. Триггер для установки end_date для старой должности при добавлении новой
+
+CREATE OR REPLACE FUNCTION update_previous_job_end_date()
+    RETURNS TRIGGER AS $$
+BEGIN
+    UPDATE job
+    SET end_date = NEW.start_date
+    WHERE employee_id = NEW.employee_id
+      AND end_date IS NULL
+      AND id != NEW.id;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER set_previous_job_end_date
+    BEFORE INSERT OR UPDATE ON job
+    FOR EACH ROW
+EXECUTE FUNCTION update_previous_job_end_date();
+
+-- 7. Триггер для установки manager_id в null при изменении/удалении роли менеджера
+
+CREATE OR REPLACE FUNCTION clear_manager_id_on_role_change()
+    RETURNS TRIGGER AS $$
+BEGIN
+    IF (TG_OP = 'UPDATE' AND OLD.job_title = 'manager' AND (NEW.job_title != 'manager' OR NEW.tp_id != OLD.tp_id)) OR
+       (TG_OP = 'DELETE' AND OLD.job_title = 'manager') THEN
+
+        UPDATE trading_point
+        SET manager_id = NULL
+        WHERE manager_id = OLD.employee_id;
+
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER clear_manager_id_trigger
+    AFTER UPDATE OR DELETE ON job
+    FOR EACH ROW
+EXECUTE FUNCTION clear_manager_id_on_role_change();
 

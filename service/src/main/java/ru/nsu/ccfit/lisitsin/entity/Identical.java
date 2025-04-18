@@ -1,7 +1,13 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
+import java.util.List;
+
 public interface Identical {
 
-    Long getId();
+    List<Object> getIds();
+
+    default List<String> getIdColumns() {
+        return List.of("id");
+    }
 
 }
