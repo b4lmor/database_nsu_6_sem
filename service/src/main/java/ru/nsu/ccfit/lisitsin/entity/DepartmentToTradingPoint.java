@@ -20,13 +20,13 @@ import java.util.List;
 public class DepartmentToTradingPoint implements Identical {
 
     @LinkTableView(linkClass = TradingPoint.class)
-    @ColumnViewName("ID Торговой точки")
+    @ColumnViewName(value = "ID Торговой точки", isEditable = false)
     @Id
     @Column(name = "tp_id", nullable = false)
     private Integer tpId;
 
     @LinkTableView(linkClass = Department.class)
-    @ColumnViewName("ID Секции")
+    @ColumnViewName(value = "ID Секции", isEditable = false)
     @Id
     @Column(name = "department_id", nullable = false)
     private Integer departmentId;

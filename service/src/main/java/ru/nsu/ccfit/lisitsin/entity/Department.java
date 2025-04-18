@@ -21,7 +21,7 @@ import java.util.List;
 @Table(name = "department")
 public class Department implements Identical {
 
-    @ColumnViewName("ID")
+    @ColumnViewName(value = "ID", isEditable = false)
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;

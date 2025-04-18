@@ -48,3 +48,5 @@ BEGIN
     RAISE NOTICE 'Связь между торговой точкой % и департаментом % успешно добавлена', p_trading_point_id, p_department_id;
 END;
 $$;
+
+-- TODO 'уволить сотрудника'

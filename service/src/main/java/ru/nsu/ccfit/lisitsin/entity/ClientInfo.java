@@ -23,6 +23,7 @@ import java.util.List;
 @Entity
 @Table(name = "client_info")
 public class ClientInfo implements Identical {
+
     @ColumnViewName(value = "ID", isEditable = false)
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_info_id_gen")

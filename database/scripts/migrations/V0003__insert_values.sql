@@ -44,23 +44,13 @@ COPY trading_point_product (id, tp_id, product_info_id)
     WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
 -- Заполнение таблицы sale
-COPY sale (id, tp_id, created_at)
+COPY sale (id, tpp_id, sale_count, created_at, client_info_id)
     FROM '/volumes/sale.csv'
-    WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
-
--- Заполнение таблицы sale_to_tpp
-COPY sale_to_tpp (sale_id, tpp_id, sale_count)
-    FROM '/volumes/sale_to_tpp.csv'
     WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
 -- Заполнение таблицы client_info
 COPY client_info (id, full_name, birth_date, height, weight, specificity, phone, email)
     FROM '/volumes/client_info.csv'
-    WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
-
--- Заполнение таблицы sale_to_client_info
-COPY sale_to_client_info (sale_id, client_info_id)
-    FROM '/volumes/sale_to_client_info.csv'
     WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
 -- Заполнение таблицы vendor

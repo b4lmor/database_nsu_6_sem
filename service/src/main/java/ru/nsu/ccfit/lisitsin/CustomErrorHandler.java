@@ -13,8 +13,9 @@ public class CustomErrorHandler implements ErrorHandler {
     @Override
     public void error(ErrorEvent errorEvent) {
         log.error("{}", errorEvent.getThrowable().getMessage());
-        if (UI.getCurrent() != null) {
-            UI.getCurrent().access(() -> {
+        UI ui = UI.getCurrent();
+        if (ui != null) {
+            ui.access(() -> {
                 Notification notification = Notification.show(
                         "Ошибка: " + errorEvent.getThrowable().getMessage(),
                         5000,

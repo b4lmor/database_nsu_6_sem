@@ -20,7 +20,7 @@ import java.util.List;
 @Table(name = "trading_point_building")
 public class TradingPointBuilding implements Identical {
 
-    @ColumnViewName("ID")
+    @ColumnViewName(value = "ID", isEditable = false)
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;

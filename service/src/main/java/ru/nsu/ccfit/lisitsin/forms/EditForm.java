@@ -53,7 +53,6 @@ public class EditForm<T> extends DefaultForm {
             );
 
             form.add(saveButton);
-
         };
     }
 

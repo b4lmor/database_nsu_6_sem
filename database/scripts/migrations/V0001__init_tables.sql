@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS department
     tpb_id     INTEGER     NOT NULL REFERENCES trading_point_building (id),
     name       VARCHAR(50) NOT NULL,
     floor      INTEGER     NOT NULL,
-    manager_id INTEGER     REFERENCES employee (id),
+    manager_id INTEGER REFERENCES employee (id),
 
     UNIQUE (tpb_id, name)
 );
@@ -106,18 +106,11 @@ CREATE TABLE IF NOT EXISTS trading_point_product
 
 CREATE TABLE IF NOT EXISTS sale
 (
-    id         BIGSERIAL PRIMARY KEY,
-    tp_id      INTEGER NOT NULL REFERENCES trading_point (id),
-    created_at TIMESTAMP DEFAULT NOW()
-);
-
-CREATE TABLE IF NOT EXISTS sale_to_tpp
-(
-    sale_id    BIGINT REFERENCES sale (id) ON DELETE CASCADE,
-    tpp_id     BIGINT REFERENCES trading_point_product (id),
-    sale_count INTEGER NOT NULL DEFAULT 1,
-
-    PRIMARY KEY (sale_id, tpp_id)
+    id             BIGSERIAL PRIMARY KEY,
+    tpp_id         BIGINT REFERENCES trading_point_product (id),
+    sale_count     INTEGER NOT NULL DEFAULT 1,
+    created_at     TIMESTAMP        DEFAULT NOW(),
+    client_info_id BIGINT REFERENCES client_info (id)
 );
 
 CREATE TABLE IF NOT EXISTS client_info
@@ -130,14 +123,6 @@ CREATE TABLE IF NOT EXISTS client_info
     specificity TEXT,
     phone       VARCHAR(15),
     email       VARCHAR(50)
-);
-
-CREATE TABLE IF NOT EXISTS sale_to_client_info
-(
-    sale_id        BIGINT REFERENCES sale (id) UNIQUE,
-    client_info_id BIGINT REFERENCES client_info (id) ON DELETE CASCADE,
-
-    PRIMARY KEY (sale_id, client_info_id)
 );
 
 CREATE TABLE IF NOT EXISTS vendor

@@ -49,24 +49,7 @@ EXECUTE FUNCTION update_order_status();
 
 -- 2. Триггер для автоматического обновления даты продажи товара
 
-CREATE OR REPLACE FUNCTION update_sell_date()
-    RETURNS TRIGGER AS
-$$
-BEGIN
-    UPDATE product_info
-    SET sell_date = NOW()
-    WHERE id = (SELECT product_info_id
-                FROM trading_point_product
-                WHERE id = NEW.tpp_id);
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_update_sell_date
-    AFTER INSERT
-    ON sale_to_tpp
-    FOR EACH ROW
-EXECUTE FUNCTION update_sell_date();
+-- TODO remove
 
 -- 3. Триггер для проверки, что отдел принадлежит зданию торговой точки
 
