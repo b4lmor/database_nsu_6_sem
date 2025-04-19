@@ -1,46 +1,16 @@
 package ru.nsu.ccfit.lisitsin.tableview.impl;
 
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.router.Route;
-import ru.nsu.ccfit.lisitsin.dao.TradingPointProductRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
+import ru.nsu.ccfit.lisitsin.dao.GenericRepository;
 import ru.nsu.ccfit.lisitsin.entity.TradingPointProduct;
-import ru.nsu.ccfit.lisitsin.forms.FormBuilder;
-import ru.nsu.ccfit.lisitsin.tableview.TableView;
+import ru.nsu.ccfit.lisitsin.tableview.DefaultTableView;
 
 @Route("Товары торговых точек")
-public class TradingPointProductTableView extends TableView<TradingPointProduct> {
+public class TradingPointProductTableView extends DefaultTableView<TradingPointProduct> {
 
-    private final TradingPointProductRepository repository;
-
-    public TradingPointProductTableView(TradingPointProductRepository repository) {
-        super(TradingPointProduct.class, repository);
-        this.repository = repository;
-
-        registerForm("Добавить торговую точку", registerForm());
-    }
-
-    private FormBuilder registerForm() {
-        return (form, dialog) -> {
-
-            IntegerField tpIdField = new IntegerField("ID Торговой точки");
-            IntegerField productIdField = new IntegerField("ID Товара");
-
-            Button saveButton = new Button(
-                    "Сохранить",
-                    e -> {
-                        repository.create(
-                                tpIdField.getValue(),
-                                productIdField.getValue()
-                        );
-
-                        dialog.close();
-                        refreshData();
-                    }
-            );
-
-            form.add(tpIdField, tpIdField, productIdField, saveButton);
-        };
+    public TradingPointProductTableView(JdbcTemplate jdbcTemplate) {
+        super(TradingPointProduct.class, new GenericRepository<>(jdbcTemplate, TradingPointProduct.class) {});
     }
 
 }

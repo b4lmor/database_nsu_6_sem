@@ -5,7 +5,6 @@ CREATE OR REPLACE PROCEDURE add_department_to_trading_point(
     LANGUAGE plpgsql
 AS $$
 DECLARE
-    v_tpb_id INTEGER;
     v_tp_type trading_point_type;
     v_already_linked_department_id INTEGER;
 BEGIN

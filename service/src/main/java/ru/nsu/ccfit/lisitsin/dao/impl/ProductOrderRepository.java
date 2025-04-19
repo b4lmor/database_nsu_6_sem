@@ -1,7 +1,8 @@
-package ru.nsu.ccfit.lisitsin.dao;
+package ru.nsu.ccfit.lisitsin.dao.impl;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.nsu.ccfit.lisitsin.dao.GenericRepository;
 import ru.nsu.ccfit.lisitsin.entity.ProductOrder;
 
 import java.util.List;
@@ -11,15 +12,6 @@ public class ProductOrderRepository extends GenericRepository<ProductOrder> {
 
     public ProductOrderRepository(JdbcTemplate jdbcTemplate) {
         super(jdbcTemplate, ProductOrder.class);
-    }
-
-    public void create(Long managerId, Long vendorId, Long tpId) {
-        jdbcTemplate.update(
-                "INSERT INTO product_order (manager_id, vendor_id, tp_id, create_date) VALUES (?, ?, ?, NOW())",
-                managerId,
-                vendorId,
-                tpId
-        );
     }
 
     @Override

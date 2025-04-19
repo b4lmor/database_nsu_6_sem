@@ -36,7 +36,6 @@ ext {
     vaadinVersion = '24.6.4'
     postgressqlDriverVersion = '42.5.1'
     reflectionsVersion = '0.10.2'
-    jakartaPersistenceVersion = '3.2.0'
 }
 
 dependencies {
@@ -44,8 +43,6 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-devtools:$springBootVersion"
 
     implementation "org.postgresql:postgresql:$postgressqlDriverVersion"
-
-    implementation "jakarta.persistence:jakarta.persistence-api:$jakartaPersistenceVersion"
 
     implementation "org.reflections:reflections:$reflectionsVersion"
 

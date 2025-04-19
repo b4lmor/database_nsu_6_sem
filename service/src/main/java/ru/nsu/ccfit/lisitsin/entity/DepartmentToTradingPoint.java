@@ -1,43 +1,25 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
 import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
-import java.util.List;
-
-@TableViewName("Секции торговых точек")
+@TableView(viewName = "Секции торговых точек", tableName = "department_to_trading_point", order = 5)
 @Getter
 @Setter
-@Entity
-@Table(name = "department_to_trading_point")
-public class DepartmentToTradingPoint implements Identical {
-
-    @LinkTableView(linkClass = TradingPoint.class)
-    @ColumnViewName(value = "ID Торговой точки", isEditable = false)
-    @Id
-    @Column(name = "tp_id", nullable = false)
-    private Integer tpId;
+public class DepartmentToTradingPoint {
 
     @LinkTableView(linkClass = Department.class)
-    @ColumnViewName(value = "ID Секции", isEditable = false)
-    @Id
-    @Column(name = "department_id", nullable = false)
+    @ColumnView(viewName = "ID Секции", columnName = "department_id", isEditable = false)
+    @IdColumn
     private Integer departmentId;
 
-    @Override
-    public List<Object> getIds() {
-        return List.of(tpId, departmentId);
-    }
+    @LinkTableView(linkClass = TradingPoint.class)
+    @ColumnView(viewName = "ID Торговой точки", columnName = "tp_id", isEditable = false)
+    @IdColumn
+    private Integer tpId;
 
-    @Override
-    public List<String> getIdColumns() {
-        return List.of("tp_id", "department_id");
-    }
 }

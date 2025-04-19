@@ -1,44 +1,27 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
 import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
-import java.util.List;
-
-@TableViewName("Товары торговых точек")
+@TableView(viewName = "Товары торговых точек", tableName = "trading_point_product", order = 9)
 @Getter
 @Setter
-@Entity
-@Table(name = "trading_point_product")
-public class TradingPointProduct implements Identical {
+public class TradingPointProduct {
 
-    @ColumnViewName(value = "ID", isEditable = false)
-    @Id
-    @Column(name = "id", nullable = false)
+    @ColumnView(viewName = "ID", columnName = "id", isEditable = false, isCreationRequired = false)
+    @IdColumn
     private Long id;
 
     @LinkTableView(linkClass = TradingPoint.class)
-    @ColumnViewName("ID Торговой точки")
-    @NotNull
-    @Column(name = "tp_id", nullable = false)
+    @ColumnView(viewName = "ID Торговой точки", columnName = "tp_id")
     private Integer tpId;
 
     @LinkTableView(linkClass = ProductInfo.class)
-    @ColumnViewName("ID информации о товаре")
-    @NotNull
-    @Column(name = "product_info_id", nullable = false)
+    @ColumnView(viewName = "ID информации о товаре", columnName = "product_info_id")
     private Long productInfoId;
 
-    @Override
-    public List<Object> getIds() {
-        return List.of(id);
-    }
 }

@@ -8,13 +8,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import org.springframework.util.ReflectionUtils;
 import ru.nsu.ccfit.lisitsin.dao.GenericRepository;
-import ru.nsu.ccfit.lisitsin.entity.Identical;
+import ru.nsu.ccfit.lisitsin.forms.CreateForm;
 import ru.nsu.ccfit.lisitsin.forms.DefaultForm;
 import ru.nsu.ccfit.lisitsin.forms.DeleteForm;
 import ru.nsu.ccfit.lisitsin.forms.EditForm;
 import ru.nsu.ccfit.lisitsin.forms.FormBuilder;
 import ru.nsu.ccfit.lisitsin.forms.ObjectViewForm;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
 import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
 
 import java.lang.reflect.Field;
@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class TableView<T extends Identical> extends VerticalLayout {
+public abstract class DefaultTableView<T> extends VerticalLayout {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
@@ -37,20 +37,17 @@ public abstract class TableView<T extends Identical> extends VerticalLayout {
 
     protected ListDataProvider<T> dataProvider;
 
-    protected HorizontalLayout filterLayout;
-
     protected ContextMenu contextMenu;
 
     protected T selectedItem;
 
     protected Grid.Column<T> selectedColumn;
 
-    public TableView(Class<T> entityClass, GenericRepository<T> genericRepository) {
+    public DefaultTableView(Class<T> entityClass, GenericRepository<T> genericRepository) {
         this.entityClass = entityClass;
         this.grid = new Grid<>(entityClass);
         this.buttonLayout = new HorizontalLayout();
         this.genericRepository = genericRepository;
-        this.filterLayout = new HorizontalLayout();
         this.contextMenu = new ContextMenu();
 
         initView();
@@ -75,8 +72,10 @@ public abstract class TableView<T extends Identical> extends VerticalLayout {
         bottomLayout.setWidthFull();
         bottomLayout.setJustifyContentMode(JustifyContentMode.START);
 
-        add(buttonLayout, filterLayout, grid, bottomLayout);
+        add(buttonLayout, grid, bottomLayout);
         setFlexGrow(1, grid);
+
+        buttonLayout.add(new Button("Создать", e -> showCreateForm()));
     }
 
     private void addContextMenu() {
@@ -97,8 +96,8 @@ public abstract class TableView<T extends Identical> extends VerticalLayout {
         contextMenu.addItem("Посмотреть ссылку", e -> {
             if (selectedColumn != null) {
                 Arrays.stream(entityClass.getDeclaredFields())
-                        .filter(f -> f.isAnnotationPresent(ColumnViewName.class) && f.isAnnotationPresent(LinkTableView.class))
-                        .filter(f -> f.getAnnotation(ColumnViewName.class).value().equals(selectedColumn.getHeaderText()))
+                        .filter(f -> f.isAnnotationPresent(ColumnView.class) && f.isAnnotationPresent(LinkTableView.class))
+                        .filter(f -> f.getAnnotation(ColumnView.class).viewName().equals(selectedColumn.getHeaderText()))
                         .findFirst()
                         .ifPresentOrElse(
                                 field -> {
@@ -136,6 +135,16 @@ public abstract class TableView<T extends Identical> extends VerticalLayout {
         });
     }
 
+    protected void showCreateForm() {
+        new CreateForm(
+                entityClass,
+                params -> {
+                    genericRepository.create(params);
+                    refreshData();
+                }
+        ).open();
+    }
+
     protected void showEditForm(T item) {
         new EditForm<>(
                 entityClass,
@@ -152,7 +161,7 @@ public abstract class TableView<T extends Identical> extends VerticalLayout {
                 entityClass,
                 item,
                 () -> {
-                    genericRepository.delete(item.getIds(), item.getIdColumns());
+                    genericRepository.delete(item);
                     refreshData();
                 }
         ).open();
@@ -172,10 +181,10 @@ public abstract class TableView<T extends Identical> extends VerticalLayout {
         ReflectionUtils.doWithFields(
                 entityClass,
                 field -> {
-                    ColumnViewName annotation = field.getAnnotation(ColumnViewName.class);
+                    ColumnView annotation = field.getAnnotation(ColumnView.class);
                     if (annotation != null && annotation.isVisible()) {
                         field.setAccessible(true);
-                        String columnName = annotation.value();
+                        String columnName = annotation.viewName();
 
                         grid.addColumn(item -> processFiled(field, item)).setHeader(columnName);
                     }
@@ -184,9 +193,7 @@ public abstract class TableView<T extends Identical> extends VerticalLayout {
     }
 
     protected void registerForm(String buttonText, FormBuilder formBuilder) {
-        DefaultForm form = new DefaultForm(formBuilder);
-
-        buttonLayout.add(new Button(buttonText, e -> form.open()));
+        buttonLayout.add(new Button(buttonText, e -> new DefaultForm(formBuilder).open()));
     }
 
     private String processFiled(Field field, T item) {

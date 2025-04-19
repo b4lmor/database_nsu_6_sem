@@ -1,50 +1,27 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
-import java.util.List;
-
-@TableViewName("Товары")
+@TableView(viewName = "Товары", tableName = "product", order = 8)
 @Getter
 @Setter
-@Entity
-@Table(name = "product")
-public class Product implements Identical {
+public class Product {
 
-    @ColumnViewName(value = "Артикль", isEditable = false)
-    @Id
-    @Size(max = 60)
-    @Column(name = "article", nullable = false, length = 60)
+    @ColumnView(viewName = "Артикль", columnName = "article", isEditable = false, isCreationRequired = false)
+    @IdColumn
     private String article;
 
-    @ColumnViewName("Название")
-    @Size(max = 60)
-    @Column(name = "name", length = 60)
+    @ColumnView(viewName = "Название", columnName = "name")
     private String name;
 
-    @ColumnViewName("Описание")
-    @Column(name = "description", length = Integer.MAX_VALUE)
+    @ColumnView(viewName = "Описание", columnName = "description")
     private String description;
 
-    @ColumnViewName("URL фото")
-    @Column(name = "photo_url", length = Integer.MAX_VALUE)
+    @ColumnView(viewName = "URL фото", columnName = "photo_url")
     private String photoUrl;
 
-    @Override
-    public List<Object> getIds() {
-        return List.of(article);
-    }
-
-    @Override
-    public List<String> getIdColumns() {
-        return List.of("article");
-    }
 }

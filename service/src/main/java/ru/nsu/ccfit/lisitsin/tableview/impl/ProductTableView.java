@@ -1,32 +1,25 @@
 package ru.nsu.ccfit.lisitsin.tableview.impl;
 
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
-import ru.nsu.ccfit.lisitsin.dao.ProductRepository;
+import org.springframework.jdbc.core.JdbcTemplate;
+import ru.nsu.ccfit.lisitsin.dao.GenericRepository;
 import ru.nsu.ccfit.lisitsin.entity.Product;
-import ru.nsu.ccfit.lisitsin.forms.FormBuilder;
-import ru.nsu.ccfit.lisitsin.tableview.TableView;
+import ru.nsu.ccfit.lisitsin.tableview.DefaultTableView;
 
 @Route("Товары")
-public class ProductTableView extends TableView<Product> {
+public class ProductTableView extends DefaultTableView<Product> {
 
-    private final ProductRepository productRepository;
-
-    public ProductTableView(ProductRepository productRepository) {
-        super(Product.class, productRepository);
-        this.productRepository = productRepository;
-
-        registerForm("Добавить товар", registerForm());
+    public ProductTableView(JdbcTemplate jdbcTemplate) {
+        super(Product.class, new GenericRepository<>(jdbcTemplate, Product.class) {});
 
         grid.addColumn(
                 new ComponentRenderer<>(
                         item -> {
                             if (item.getPhotoUrl() == null || item.getPhotoUrl().isBlank()) {
-                                return new Span("No photo");
+                                return new Span("---");
                             }
 
                             Image image = new Image(item.getPhotoUrl(), "Photo");
@@ -37,33 +30,6 @@ public class ProductTableView extends TableView<Product> {
                         }
                 )
         ).setHeader("Фото");
-    }
-
-    private FormBuilder registerForm() {
-        return (form, dialog) -> {
-
-            TextField articleField = new TextField("Артикль");
-            TextField nameField = new TextField("Название");
-            TextField descriptionField = new TextField("Описание");
-            TextField photoUrlField = new TextField("URL фото");
-
-            Button saveButton = new Button(
-                    "Сохранить",
-                    e -> {
-                        productRepository.create(
-                                articleField.getValue(),
-                                nameField.getValue(),
-                                descriptionField.getValue(),
-                                photoUrlField.getValue()
-                        );
-
-                        dialog.close();
-                        refreshData();
-                    }
-            );
-
-            form.add(articleField, nameField, descriptionField, photoUrlField, saveButton);
-        };
     }
 
 }

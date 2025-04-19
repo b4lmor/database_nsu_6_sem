@@ -1,68 +1,41 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
-@TableViewName("Информация о клиентах")
+@TableView(viewName = "Информация о клиентах", tableName = "client_info", order = 13)
 @Getter
 @Setter
-@Entity
-@Table(name = "client_info")
-public class ClientInfo implements Identical {
+public class ClientInfo {
 
-    @ColumnViewName(value = "ID", isEditable = false)
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_info_id_gen")
-    @SequenceGenerator(name = "client_info_id_gen", sequenceName = "client_info_id_seq", allocationSize = 1)
-    @Column(name = "id", nullable = false)
+    @ColumnView(viewName = "ID", columnName = "id", isEditable = false, isCreationRequired = false)
+    @IdColumn
     private Long id;
 
-    @ColumnViewName("ФИО")
-    @Size(max = 100)
-    @Column(name = "full_name", length = 100)
+    @ColumnView(viewName = "ФИО", columnName = "full_name")
     private String fullName;
 
-    @ColumnViewName("Дата рождения")
-    @Column(name = "birth_date")
+    @ColumnView(viewName = "Дата рождения", columnName = "birth_date")
     private LocalDate birthDate;
 
-    @ColumnViewName("Рост")
-    @Column(name = "height", precision = 4, scale = 1)
-    private BigDecimal height;
+    @ColumnView(viewName = "Рост", columnName = "height")
+    private Double height;
 
-    @ColumnViewName("Вес")
-    @Column(name = "weight", precision = 5, scale = 2)
-    private BigDecimal weight;
+    @ColumnView(viewName = "Вес", columnName = "weight")
+    private Double weight;
 
-    @ColumnViewName("Доп. информация")
-    @Column(name = "specificity", length = Integer.MAX_VALUE)
+    @ColumnView(viewName = "Доп. информация", columnName = "specificity")
     private String specificity;
 
-    @ColumnViewName("Номер телефона")
-    @Size(max = 15)
-    @Column(name = "phone", length = 15)
+    @ColumnView(viewName = "Номер телефона", columnName = "phone")
     private String phone;
 
-    @ColumnViewName("Email")
-    @Size(max = 50)
-    @Column(name = "email", length = 50)
+    @ColumnView(viewName = "Email", columnName = "email")
     private String email;
 
-    public List<Object> getIds() {
-        return List.of(id);
-    }
 }

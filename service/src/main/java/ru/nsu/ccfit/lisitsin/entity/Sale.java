@@ -1,52 +1,39 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
 import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
 import java.time.LocalDate;
-import java.util.List;
 
-@TableViewName("Продажи")
+@TableView(viewName = "Продажи", tableName = "sale", order = 12)
 @Getter
 @Setter
-@Entity
-@Table(name = "sale")
-public class Sale implements Identical {
+public class Sale {
 
-    @ColumnViewName(value = "ID", isEditable = false)
-    @Id
-    @Column(name = "id", nullable = false)
+    @ColumnView(viewName = "ID", columnName = "id", isEditable = false, isCreationRequired = false)
+    @IdColumn
     private Long id;
 
     @LinkTableView(linkClass = TradingPointProduct.class)
-    @ColumnViewName("ID Товара торговой точки")
-    @NotNull
-    @Column(name = "tpp_id", nullable = false)
+    @ColumnView(viewName = "ID Товара торговой точки", columnName = "tpp_id")
     private Long tppId;
 
+    @LinkTableView(linkClass = Employee.class)
+    @ColumnView(viewName = "ID Продавца", columnName = "seller_id")
+    private Integer sellerId;
+
     @LinkTableView(linkClass = ClientInfo.class)
-    @ColumnViewName("ID Информации о клиенте")
-    @Column(name = "client_info_id")
+    @ColumnView(viewName = "ID Информации о клиенте", columnName = "client_info_id")
     private Long clientInfoId;
 
-    @ColumnViewName("Кол-во продаж (за раз)")
-    @Column(name = "sale_count", nullable = false)
+    @ColumnView(viewName = "Кол-во продаж (за раз)", columnName = "sale_count")
     private Integer saleCount;
 
-    @ColumnViewName(value = "Дата продажи", isEditable = false)
-    @Column(name = "created_at")
+    @ColumnView(viewName = "Дата продажи", columnName = "created_at", isEditable = false, isCreationRequired = false)
     private LocalDate createdAt;
 
-    @Override
-    public List<Object> getIds() {
-        return List.of(id);
-    }
 }

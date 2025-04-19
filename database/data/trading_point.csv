@@ -1,3 +1,3 @@
-id,tpb_id,manager_id,name,rent_payment,tp_size
-1,1,1,"Универмаг 1",50000.00,100.00
-2,2,4,"Магазин 2",30000.00,80.00
+tpb_id,manager_id,name,rent_payment,tp_size
+1,1,Универмаг 1,50000.00,100.00
+2,4,Магазин 2,30000.00,80.00

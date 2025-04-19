@@ -16,3 +16,10 @@ flyway {
     locations = ['filesystem:scripts/migrations']
     cleanDisabled = false
 }
+
+task flywayCleanAndMigrate(dependsOn: ['flywayClean', 'flywayMigrate']) {
+    group = 'Flyway'
+    description = 'Clean the database and run all migrations'
+
+    tasks.findByName('flywayMigrate').mustRunAfter 'flywayClean'
+}

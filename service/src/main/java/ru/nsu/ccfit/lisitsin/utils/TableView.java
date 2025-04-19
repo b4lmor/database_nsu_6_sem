@@ -6,13 +6,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface ColumnViewName {
+@Target({ElementType.TYPE})
+public @interface TableView {
 
-    String value();
+    String viewName() default "";
+
+    String tableName();
 
     boolean isVisible() default true;
 
-    boolean isEditable() default true;
+    int order();
 
 }

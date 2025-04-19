@@ -1,61 +1,36 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
 import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-@TableViewName("Торговые точки")
+@TableView(viewName = "Торговые точки", tableName = "trading_point", order = 2)
 @Getter
 @Setter
-@Entity
-@Table(name = "trading_point")
-public class TradingPoint implements Identical {
+public class TradingPoint {
 
-    @ColumnViewName(value = "ID", isEditable = false)
-    @Id
-    @Column(name = "id", nullable = false)
+    @ColumnView(viewName = "ID", columnName = "id", isEditable = false, isCreationRequired = false)
+    @IdColumn
     private Integer id;
 
     @LinkTableView(linkClass = TradingPointBuilding.class)
-    @ColumnViewName("ID Здания")
-    @Column(name = "tpb_id")
+    @ColumnView(viewName = "ID Здания", columnName = "tpb_id")
     private Integer tpbId;
 
     @LinkTableView(linkClass = Employee.class)
-    @ColumnViewName("ID менеджера")
-    @Column(name = "manager_id")
+    @ColumnView(viewName = "ID менеджера", columnName = "manager_id")
     private Integer managerId;
 
-    @ColumnViewName("Название")
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "name", nullable = false, length = 50)
+    @ColumnView(viewName = "Название", columnName = "name")
     private String name;
 
-    @ColumnViewName("Стоимость аренды")
-    @NotNull
-    @Column(name = "rent_payment", nullable = false, precision = 10, scale = 2)
-    private BigDecimal rentPayment;
+    @ColumnView(viewName = "Стоимость аренды", columnName = "rent_payment")
+    private Double rentPayment;
 
-    @ColumnViewName("Площадь помещения")
-    @NotNull
-    @Column(name = "tp_size", nullable = false, precision = 10, scale = 2)
-    private BigDecimal tpSize;
-
-    public List<Object> getIds() {
-        return List.of(id);
-    }
-
+    @ColumnView(viewName = "Площадь помещения", columnName = "tp_size")
+    private Double tpSize;
 
 }

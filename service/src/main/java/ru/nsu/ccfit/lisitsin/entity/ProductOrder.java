@@ -1,66 +1,47 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.EnumColumn;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
 import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
-import java.time.Instant;
-import java.util.List;
+import java.time.LocalDate;
 
-@TableViewName("Заказы товаров")
+@TableView(viewName = "Заказы товаров", tableName = "product_order", order = 10)
 @Getter
 @Setter
-@Entity
-@Table(name = "product_order")
-public class ProductOrder implements Identical {
+public class ProductOrder {
 
-    @ColumnViewName(value = "ID", isEditable = false)
-    @Id
-    @Column(name = "id", nullable = false)
+    @ColumnView(viewName = "ID", columnName = "id", isEditable = false, isCreationRequired = false)
+    @IdColumn
     private Long id;
 
     @LinkTableView(linkClass = Employee.class)
-    @ColumnViewName("ID Менеджера")
-    @Column(name = "manager_id")
+    @ColumnView(viewName = "ID Менеджера", columnName = "manager_id")
     private Integer managerId;
 
     @LinkTableView(linkClass = Vendor.class)
-    @ColumnViewName("ID Поставщика")
-    @Column(name = "vendor_id")
+    @ColumnView(viewName = "ID Поставщика", columnName = "vendor_id")
     private Integer vendorId;
 
     @LinkTableView(linkClass = TradingPoint.class)
-    @ColumnViewName("ID Тороговой точки")
-    @NotNull
-    @Column(name = "tp_id", nullable = false)
+    @ColumnView(viewName = "ID Тороговой точки", columnName = "tp_id")
     private Integer tpId;
 
-    @ColumnViewName("Дата создания")
-    @NotNull
-    @Column(name = "create_date", nullable = false)
-    private Instant createDate;
+    @ColumnView(viewName = "Дата создания", columnName = "create_date", isCreationRequired = false)
+    private LocalDate createDate;
 
-    @ColumnViewName("Дата подтверждения")
-    @Column(name = "confirm_date")
-    private Instant confirmDate;
+    @ColumnView(viewName = "Дата подтверждения", columnName = "confirm_date", isCreationRequired = false)
+    private LocalDate confirmDate;
 
-    @ColumnViewName("Дата доставки")
-    @Column(name = "delivery_date")
-    private Instant deliveryDate;
+    @ColumnView(viewName = "Дата доставки", columnName = "delivery_date", isCreationRequired = false)
+    private LocalDate deliveryDate;
 
-    @ColumnViewName("Статус заказа")
-    @Column(name = "order_status")
+    @EnumColumn(OrderStatus.class)
+    @ColumnView(viewName = "Статус заказа", columnName = "order_status", isCreationRequired = false)
     private String orderStatus;
 
-    @Override
-    public List<Object> getIds() {
-        return List.of(id);
-    }
 }

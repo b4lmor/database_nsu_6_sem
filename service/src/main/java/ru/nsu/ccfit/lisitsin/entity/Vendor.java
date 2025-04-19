@@ -1,44 +1,24 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
-import java.util.List;
-
-@TableViewName("Поставщики")
+@TableView(viewName = "Поставщики", tableName = "vendor", order = 6)
 @Getter
 @Setter
-@Entity
-@Table(name = "vendor")
-public class Vendor implements Identical {
+public class Vendor {
 
-    @ColumnViewName(value = "ID", isEditable = false)
-    @Id
-    @Column(name = "id", nullable = false)
+    @ColumnView(viewName = "ID", columnName = "id", isEditable = false, isCreationRequired = false)
+    @IdColumn
     private Integer id;
 
-    @ColumnViewName("Название")
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "name", nullable = false, length = 50)
+    @ColumnView(viewName = "Название", columnName = "name")
     private String name;
 
-    @ColumnViewName("Адрес")
-    @Size(max = 120)
-    @NotNull
-    @Column(name = "address", nullable = false, length = 120)
+    @ColumnView(viewName = "Адрес", columnName = "address")
     private String address;
 
-    @Override
-    public List<Object> getIds() {
-        return List.of(id);
-    }
 }

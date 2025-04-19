@@ -4,9 +4,8 @@ import com.vaadin.flow.component.AbstractSinglePropertyField;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.textfield.TextField;
-import jakarta.persistence.Column;
 import org.springframework.util.ReflectionUtils;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -29,16 +28,15 @@ public class EditForm<T> extends DefaultForm {
             ReflectionUtils.doWithFields(
                     targetClass,
                     field -> {
-                        ColumnViewName annotation = field.getAnnotation(ColumnViewName.class);
-                        Column originalColumnAnnotation = field.getAnnotation(Column.class);
-                        if (annotation != null && annotation.isVisible() && originalColumnAnnotation != null) {
-                            var component = getComponent(field, annotation.value(), item);
+                        ColumnView annotation = field.getAnnotation(ColumnView.class);
+                        if (annotation != null && annotation.isVisible()) {
+                            var component = getComponent(field, annotation.viewName(), item);
 
                             if (!annotation.isEditable()) {
                                 component.setReadOnly(true);
                             }
 
-                            fields.put(originalColumnAnnotation.name(), component::getValue);
+                            fields.put(annotation.columnName(), component::getValue);
                             form.add(component);
                         }
                     }

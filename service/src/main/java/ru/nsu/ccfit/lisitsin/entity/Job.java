@@ -1,62 +1,43 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.EnumColumn;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
 import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
-@TableViewName("Должности сотрудников")
+@TableView(viewName = "Должности сотрудников", tableName = "job", order = 1)
 @Getter
 @Setter
-@Entity
-@Table(name = "job")
-public class Job implements Identical {
+public class Job {
 
-    @ColumnViewName(value = "ID", isEditable = false)
-    @Id
-    @Column(name = "id", nullable = false)
+    @ColumnView(viewName = "ID", columnName = "id", isEditable = false, isCreationRequired = false)
+    @IdColumn
     private Integer id;
 
     @LinkTableView(linkClass = Employee.class)
-    @ColumnViewName("ID сотрудника")
-    @Column(name = "employee_id")
+    @ColumnView(viewName = "ID сотрудника", columnName = "employee_id")
     private Integer employeeId;
 
     @LinkTableView(linkClass = TradingPoint.class)
-    @ColumnViewName("ID Торговой точки")
-    @Column(name = "tp_id")
+    @ColumnView(viewName = "ID Торговой точки", columnName = "tp_id")
     private Integer tpId;
 
-    @ColumnViewName("Дата начала работы")
-    @NotNull
-    @Column(name = "start_date", nullable = false)
+    @ColumnView(viewName = "Дата начала работы", columnName = "start_date")
     private LocalDate startDate;
 
-    @ColumnViewName("Дата окончания работы")
-    @Column(name = "end_date")
+    @ColumnView(viewName = "Дата окончания работы", columnName = "end_date", isCreationRequired = false)
     private LocalDate endDate;
 
-    @ColumnViewName("Зарплата")
-    @NotNull
-    @Column(name = "salary", nullable = false, precision = 10, scale = 2)
-    private BigDecimal salary;
+    @ColumnView(viewName = "Зарплата", columnName = "salary")
+    private Double salary;
 
-    @ColumnViewName("Должность")
-    @Column(name = "job_title")
+    @EnumColumn(JobTitle.class)
+    @ColumnView(viewName = "Должность", columnName = "job_title")
     private String jobTitle;
-
-    public List<Object> getIds() {
-        return List.of(id);
-    }
 
 }

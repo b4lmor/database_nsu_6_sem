@@ -1,53 +1,32 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
 import java.time.LocalDate;
-import java.util.List;
 
-@TableViewName("Сотрудники")
+@TableView(viewName = "Сотрудники", tableName = "employee", order = 0)
 @Getter
 @Setter
-@Entity
-@Table(name = "employee")
-public class Employee implements Identical {
+public class Employee {
 
-    @ColumnViewName(value = "ID", isEditable = false)
-    @Id
-    @Column(name = "id", nullable = false)
+    @ColumnView(viewName = "ID", columnName = "id", isEditable = false, isCreationRequired = false)
+    @IdColumn
     private Integer id;
 
-    @ColumnViewName("ФИО")
-    @Size(max = 100)
-    @NotNull
-    @Column(name = "full_name", nullable = false, length = 100)
+    @ColumnView(viewName = "ФИО", columnName = "full_name")
     private String fullName;
 
-    @ColumnViewName("Дата рождения")
-    @NotNull
-    @Column(name = "birth_date", nullable = false)
+    @ColumnView(viewName = "Дата рождения", columnName = "birth_date")
     private LocalDate birthDate;
 
-    @ColumnViewName("Дата приема")
-    @NotNull
-    @Column(name = "hire_date", nullable = false)
+    @ColumnView(viewName = "Дата приема", columnName = "hire_date", isCreationRequired = false)
     private LocalDate hireDate;
 
-    @ColumnViewName("Дата увольнения")
-    @Column(name = "resignation_date")
+    @ColumnView(viewName = "Дата увольнения", columnName = "resignation_date", isCreationRequired = false)
     private LocalDate resignationDate;
-
-    public List<Object> getIds() {
-        return List.of(id);
-    }
 
 }

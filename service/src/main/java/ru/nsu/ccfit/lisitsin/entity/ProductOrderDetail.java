@@ -1,48 +1,28 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
 import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
-import java.util.List;
-
-@TableViewName("Детали заказов")
+@TableView(viewName = "Детали заказов", tableName = "product_order_details", order = 11)
 @Getter
 @Setter
-@Entity
-@Table(name = "product_order_details")
-public class ProductOrderDetail implements Identical {
+public class ProductOrderDetail {
 
-    @Id
     @LinkTableView(linkClass = ProductOrder.class)
-    @ColumnViewName(value = "ID Заказа товара", isEditable = false)
-    @Column(name = "product_order_id")
+    @ColumnView(viewName = "ID Заказа товара", columnName = "product_order_id", isEditable = false)
+    @IdColumn
     private Long productOrderId;
 
-    @Id
-    @LinkTableView(linkClass = Product.class)
-    @ColumnViewName(value = "Артикль товара", isEditable = false)
-    @Column(name = "product_article")
+    @LinkTableView(linkClass = Product.class, joinColumn = "article")
+    @ColumnView(viewName = "Артикль товара", columnName = "product_article", isEditable = false)
+    @IdColumn
     private String productArticle;
 
-    @NotNull
-    @Column(name = "product_count", nullable = false)
+    @ColumnView(viewName = "Количество товара", columnName = "product_count")
     private Integer productCount;
 
-    @Override
-    public List<Object> getIds() {
-        return List.of(productOrderId, productArticle);
-    }
-
-    @Override
-    public List<String> getIdColumns() {
-        return List.of("product_order_id", "product_article");
-    }
 }

@@ -1,55 +1,33 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
 import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
-import java.util.List;
-
-@TableViewName("Секции")
+@TableView(viewName = "Секции", tableName = "department", order = 4)
 @Getter
 @Setter
-@Entity
-@Table(name = "department")
-public class Department implements Identical {
+public class Department {
 
-    @ColumnViewName(value = "ID", isEditable = false)
-    @Id
-    @Column(name = "id", nullable = false)
+    @ColumnView(viewName = "ID", columnName = "id", isEditable = false, isCreationRequired = false)
+    @IdColumn
     private Integer id;
 
     @LinkTableView(linkClass = TradingPointBuilding.class)
-    @ColumnViewName("ID Здания")
-    @NotNull
-    @Column(name = "tpb_id", nullable = false)
+    @ColumnView(viewName = "ID Здания", columnName = "tpb_id")
     private Integer tpbId;
 
     @LinkTableView(linkClass = Employee.class)
-    @ColumnViewName("ID менеджера")
-    @Column(name = "manager_id")
+    @ColumnView(viewName = "ID менеджера", columnName = "manager_id")
     private Integer managerId;
 
-    @ColumnViewName("Название")
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "name", nullable = false, length = 50)
+    @ColumnView(viewName = "Название", columnName = "name")
     private String name;
 
-    @ColumnViewName("Этаж")
-    @NotNull
-    @Column(name = "floor", nullable = false)
+    @ColumnView(viewName = "Этаж", columnName = "floor")
     private Integer floor;
 
-    @Override
-    public List<Object> getIds() {
-        return List.of(id);
-    }
 }

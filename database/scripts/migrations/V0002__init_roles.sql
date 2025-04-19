@@ -1,8 +1,3 @@
-CREATE ROLE employee;
-CREATE ROLE manager;
-CREATE ROLE vendor;
-CREATE ROLE admin WITH SUPERUSER;
-
 -- 1. trading_point_building
 GRANT SELECT ON trading_point_building TO employee, manager, vendor;
 

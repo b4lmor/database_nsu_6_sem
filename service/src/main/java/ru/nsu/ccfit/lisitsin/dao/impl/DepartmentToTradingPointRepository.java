@@ -1,10 +1,9 @@
-package ru.nsu.ccfit.lisitsin.dao;
+package ru.nsu.ccfit.lisitsin.dao.impl;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import ru.nsu.ccfit.lisitsin.dao.GenericRepository;
 import ru.nsu.ccfit.lisitsin.entity.DepartmentToTradingPoint;
-
-import java.util.List;
 
 @Repository
 public class DepartmentToTradingPointRepository extends GenericRepository<DepartmentToTradingPoint> {
@@ -14,15 +13,11 @@ public class DepartmentToTradingPointRepository extends GenericRepository<Depart
     }
 
     @Override
-    public void update(List<Object> params) {
-        throw new RuntimeException("Недоступная операция");
-    }
-
-    public void create(int departmentId, int tradingPointId) {
+    public void create(Object... params) {
         jdbcTemplate.update(
                 "CALL add_department_to_trading_point(?, ?)",
-                departmentId,
-                tradingPointId
+                params
         );
     }
+
 }

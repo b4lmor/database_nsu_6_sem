@@ -2,7 +2,7 @@ package ru.nsu.ccfit.lisitsin.forms;
 
 import com.vaadin.flow.component.textfield.TextField;
 import org.springframework.util.ReflectionUtils;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
 
 import java.lang.reflect.Field;
 
@@ -17,9 +17,9 @@ public class ObjectViewForm<T> extends DefaultForm {
                 ReflectionUtils.doWithFields(
                         targetClass,
                         field -> {
-                            ColumnViewName annotation = field.getAnnotation(ColumnViewName.class);
+                            ColumnView annotation = field.getAnnotation(ColumnView.class);
                             if (annotation != null && annotation.isVisible()) {
-                                form.add(getComponent(field, annotation.value(), item));
+                                form.add(getComponent(field, annotation.viewName(), item));
                             }
                         }
                 );

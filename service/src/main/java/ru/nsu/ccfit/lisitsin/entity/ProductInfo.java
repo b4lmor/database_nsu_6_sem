@@ -1,54 +1,34 @@
 package ru.nsu.ccfit.lisitsin.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnViewName;
+import ru.nsu.ccfit.lisitsin.utils.ColumnView;
+import ru.nsu.ccfit.lisitsin.utils.IdColumn;
 import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableViewName;
+import ru.nsu.ccfit.lisitsin.utils.TableView;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
-@TableViewName("Информация о товарах")
+@TableView(viewName = "Информация о товарах", tableName = "product_info", order = 9)
 @Getter
 @Setter
-@Entity
-@Table(name = "product_info")
-public class ProductInfo implements Identical {
+public class ProductInfo {
 
-    @ColumnViewName(value = "ID", isEditable = false)
-    @Id
-    @Column(name = "id", nullable = false)
+    @ColumnView(viewName = "ID", columnName = "id", isEditable = false, isCreationRequired = false)
+    @IdColumn
     private Long id;
 
     @LinkTableView(linkClass = Product.class, joinColumn = "article")
-    @ColumnViewName("Артикль товара")
-    @NotNull
-    @Column(name = "product_article", nullable = false)
+    @ColumnView(viewName = "Артикль товара", columnName = "product_article")
     private String productArticle;
 
-    @ColumnViewName("Дата доставки")
-    @NotNull
-    @Column(name = "delivery_date", nullable = false)
+    @ColumnView(viewName = "Дата доставки", columnName = "delivery_date")
     private LocalDate deliveryDate;
 
-    @ColumnViewName("Дата продажи")
-    @Column(name = "sell_date")
+    @ColumnView(viewName = "Дата продажи", columnName = "sell_date", isCreationRequired = false)
     private LocalDate sellDate;
 
-    @ColumnViewName("Цена")
-    @NotNull
-    @Column(name = "price", nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+    @ColumnView(viewName = "Цена", columnName = "price")
+    private Double price;
 
-    @Override
-    public List<Object> getIds() {
-        return List.of(id);
-    }
 }
