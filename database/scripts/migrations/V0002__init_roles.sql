@@ -37,14 +37,14 @@ GRANT SELECT ON trading_point_product TO vendor;
 GRANT SELECT, INSERT ON sale TO employee, manager;
 
 -- 10. sale_to_tpp
-GRANT SELECT, INSERT ON sale_to_tpp TO employee, manager;
+-- GRANT SELECT, INSERT ON sale_to_tpp TO employee, manager;
 
 -- 11. client_info
 GRANT SELECT (id), INSERT ON client_info TO employee;
 GRANT SELECT, INSERT, UPDATE ON client_info TO manager;
 
 -- 12. sale_to_client_info
-GRANT SELECT, INSERT ON sale_to_client_info TO employee, manager;
+-- GRANT SELECT, INSERT ON sale_to_client_info TO employee, manager;
 
 -- 13. vendor
 GRANT SELECT ON vendor TO employee, manager;

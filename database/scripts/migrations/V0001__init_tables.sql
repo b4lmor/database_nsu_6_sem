@@ -104,15 +104,6 @@ CREATE TABLE IF NOT EXISTS trading_point_product
     product_info_id BIGINT  NOT NULL REFERENCES product_info (id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS sale
-(
-    id             BIGSERIAL PRIMARY KEY,
-    tpp_id         BIGINT REFERENCES trading_point_product (id),
-    sale_count     INTEGER NOT NULL DEFAULT 1,
-    created_at     TIMESTAMP        DEFAULT NOW(),
-    client_info_id BIGINT REFERENCES client_info (id)
-);
-
 CREATE TABLE IF NOT EXISTS client_info
 (
     id          BIGSERIAL PRIMARY KEY,
@@ -123,6 +114,15 @@ CREATE TABLE IF NOT EXISTS client_info
     specificity TEXT,
     phone       VARCHAR(15),
     email       VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS sale
+(
+    id             BIGSERIAL PRIMARY KEY,
+    tpp_id         BIGINT REFERENCES trading_point_product (id),
+    sale_count     INTEGER NOT NULL DEFAULT 1,
+    created_at     TIMESTAMP        DEFAULT NOW(),
+    client_info_id BIGINT REFERENCES client_info (id)
 );
 
 CREATE TABLE IF NOT EXISTS vendor
