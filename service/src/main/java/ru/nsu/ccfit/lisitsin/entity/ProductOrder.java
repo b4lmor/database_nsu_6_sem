@@ -2,11 +2,11 @@ package ru.nsu.ccfit.lisitsin.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnView;
-import ru.nsu.ccfit.lisitsin.utils.EnumColumn;
-import ru.nsu.ccfit.lisitsin.utils.IdColumn;
-import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableView;
+import ru.nsu.ccfit.lisitsin.annotations.ColumnView;
+import ru.nsu.ccfit.lisitsin.annotations.EnumColumn;
+import ru.nsu.ccfit.lisitsin.annotations.IdColumn;
+import ru.nsu.ccfit.lisitsin.annotations.LinkTableView;
+import ru.nsu.ccfit.lisitsin.annotations.TableView;
 
 import java.time.LocalDate;
 
@@ -40,7 +40,7 @@ public class ProductOrder {
     @ColumnView(viewName = "Дата доставки", columnName = "delivery_date", isCreationRequired = false)
     private LocalDate deliveryDate;
 
-    @EnumColumn(OrderStatus.class)
+    @EnumColumn(value = OrderStatus.class, enumName = "product_order_status_type")
     @ColumnView(viewName = "Статус заказа", columnName = "order_status", isCreationRequired = false)
     private String orderStatus;
 

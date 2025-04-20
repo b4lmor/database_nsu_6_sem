@@ -13,7 +13,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.reflections.Reflections;
 import org.springframework.jdbc.core.JdbcTemplate;
-import ru.nsu.ccfit.lisitsin.utils.TableView;
+import ru.nsu.ccfit.lisitsin.annotations.TableView;
 
 import java.util.List;
 import java.util.Map;

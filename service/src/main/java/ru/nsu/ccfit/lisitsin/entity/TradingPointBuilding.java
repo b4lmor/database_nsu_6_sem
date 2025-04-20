@@ -2,9 +2,9 @@ package ru.nsu.ccfit.lisitsin.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnView;
-import ru.nsu.ccfit.lisitsin.utils.EnumColumn;
-import ru.nsu.ccfit.lisitsin.utils.TableView;
+import ru.nsu.ccfit.lisitsin.annotations.ColumnView;
+import ru.nsu.ccfit.lisitsin.annotations.EnumColumn;
+import ru.nsu.ccfit.lisitsin.annotations.TableView;
 
 @TableView(viewName = "Здания торговых точек", tableName = "trading_point_building", order = 9)
 @Getter
@@ -20,7 +20,7 @@ public class TradingPointBuilding {
     @ColumnView(viewName = "Название", columnName = "name")
     private String name;
 
-    @EnumColumn(TradingPointBuildingType.class)
+    @EnumColumn(value = TradingPointBuildingType.class, enumName = "trading_point_type")
     @ColumnView(viewName = "Тип", columnName = "tp_type")
     private String tpType;
 

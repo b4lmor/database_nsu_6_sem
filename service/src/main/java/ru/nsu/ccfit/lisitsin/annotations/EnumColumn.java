@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.lisitsin.utils;
+package ru.nsu.ccfit.lisitsin.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -10,5 +10,7 @@ import java.lang.annotation.Target;
 public @interface EnumColumn {
 
     Class<?> value();
+
+    String enumName();
 
 }

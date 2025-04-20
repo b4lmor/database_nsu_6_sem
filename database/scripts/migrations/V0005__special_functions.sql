@@ -48,4 +48,30 @@ BEGIN
 END;
 $$;
 
--- TODO 'уволить сотрудника'
+-- Функция для подтверждения заказа (установка confirm_date в текущее время)
+CREATE OR REPLACE PROCEDURE confirm_order(order_id BIGINT)
+AS $$
+BEGIN
+    UPDATE product_order
+    SET confirm_date = NOW()
+    WHERE id = order_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Заказ с ID % не найден', order_id;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Функция для принятия заказа (установка delivery_date в текущее время)
+CREATE OR REPLACE PROCEDURE accept_order(order_id BIGINT)
+AS $$
+BEGIN
+    UPDATE product_order
+    SET delivery_date = NOW()
+    WHERE id = order_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Заказ с ID % не найден', order_id;
+    END IF;
+END;
+$$ LANGUAGE plpgsql;

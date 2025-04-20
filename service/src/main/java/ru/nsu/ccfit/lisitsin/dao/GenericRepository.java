@@ -4,18 +4,22 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.ReflectionUtils;
-import ru.nsu.ccfit.lisitsin.utils.ColumnView;
-import ru.nsu.ccfit.lisitsin.utils.IdColumn;
-import ru.nsu.ccfit.lisitsin.utils.TableView;
+import ru.nsu.ccfit.lisitsin.annotations.ColumnView;
+import ru.nsu.ccfit.lisitsin.annotations.EnumColumn;
+import ru.nsu.ccfit.lisitsin.annotations.IdColumn;
+import ru.nsu.ccfit.lisitsin.annotations.TableView;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 public abstract class GenericRepository<T> {
+
+    private static final Object[] EMPTY_PARAMS = new Object[]{};
 
     protected final JdbcTemplate jdbcTemplate;
 
@@ -25,15 +29,15 @@ public abstract class GenericRepository<T> {
         jdbcTemplate.update(buildCreateQuery(), params);
     }
 
-    public List<T> findAll() {
+    public List<T> findAll(Map<Field, Object> filterItems) {
         return jdbcTemplate.query(
-                "SELECT * FROM " + getTableName(entityClass),
-                new BeanPropertyRowMapper<>(entityClass)
+                buildSelectQueryWithFilters(filterItems),
+                new BeanPropertyRowMapper<>(entityClass),
+                filterItems == null ? EMPTY_PARAMS : filterItems.values().toArray()
         );
     }
 
     public <U> U findByField(Class<U> targetClass, String column, Object value) {
-
         return jdbcTemplate.queryForObject(
                 "SELECT * FROM %s WHERE %s = ? LIMIT 1".formatted(getTableName(targetClass), column),
                 new BeanPropertyRowMapper<>(targetClass),
@@ -86,6 +90,44 @@ public abstract class GenericRepository<T> {
         return idMap;
     }
 
+    private String buildSelectQueryWithFilters(Map<Field, Object> filterItems) {
+        if (filterItems == null || filterItems.isEmpty()) {
+            return "SELECT * FROM " + getTableName(entityClass);
+        }
+
+        StringBuilder sqlBuilder = new StringBuilder("SELECT * FROM ").append(getTableName(entityClass));
+
+        int paramCount = 0;
+
+        for (Map.Entry<Field, Object> entry : filterItems.entrySet()) {
+            if (paramCount == 0) {
+                sqlBuilder.append(" WHERE ");
+            }
+
+            if (entry.getValue() == null || entry.getValue().toString().isBlank() ||
+                    !entry.getKey().isAnnotationPresent(ColumnView.class) ||
+                    !entry.getKey().getAnnotation(ColumnView.class).isVisible()) {
+                continue;
+            }
+
+            if (paramCount > 0) {
+                sqlBuilder.append(" AND ");
+            }
+
+            sqlBuilder.append(entry.getKey().getAnnotation(ColumnView.class).columnName());
+
+            if (entry.getKey().isAnnotationPresent(EnumColumn.class)) {
+                sqlBuilder.append("::text");
+            }
+
+            sqlBuilder.append(" = ?");
+
+            paramCount++;
+        }
+
+        return sqlBuilder.toString();
+    }
+
     protected String buildCreateQuery() {
         List<String> columns = new ArrayList<>();
         List<String> placeholders = new ArrayList<>();
@@ -118,8 +160,15 @@ public abstract class GenericRepository<T> {
 
                 if (field.isAnnotationPresent(IdColumn.class)) {
                     idColumns.add(columnName + " = ?");
+
                 } else if (columnView.isEditable()) {
-                    settableColumns.add(columnName + " = ?");
+                    String stmt = columnName + " = ?";
+
+                    if (field.isAnnotationPresent(EnumColumn.class)) {
+                        stmt += "::" + field.getAnnotation(EnumColumn.class).enumName();
+                    }
+
+                    settableColumns.add(stmt);
                 }
             }
         });

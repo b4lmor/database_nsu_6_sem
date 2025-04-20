@@ -6,17 +6,19 @@ import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
 import ru.nsu.ccfit.lisitsin.dao.GenericRepository;
 import ru.nsu.ccfit.lisitsin.forms.CreateForm;
 import ru.nsu.ccfit.lisitsin.forms.DefaultForm;
 import ru.nsu.ccfit.lisitsin.forms.DeleteForm;
 import ru.nsu.ccfit.lisitsin.forms.EditForm;
+import ru.nsu.ccfit.lisitsin.forms.FilterForm;
 import ru.nsu.ccfit.lisitsin.forms.FormBuilder;
 import ru.nsu.ccfit.lisitsin.forms.ObjectViewForm;
 import ru.nsu.ccfit.lisitsin.forms.ViewForm;
-import ru.nsu.ccfit.lisitsin.utils.ColumnView;
-import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
+import ru.nsu.ccfit.lisitsin.annotations.ColumnView;
+import ru.nsu.ccfit.lisitsin.annotations.LinkTableView;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -24,7 +26,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 public abstract class DefaultTableView<T> extends VerticalLayout {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -42,6 +46,8 @@ public abstract class DefaultTableView<T> extends VerticalLayout {
     protected GridContextMenu<T> contextMenu;
 
     protected T selectedItem;
+
+    protected Map<Field, Object> filterItems;
 
     protected Grid.Column<T> selectedColumn;
 
@@ -78,6 +84,8 @@ public abstract class DefaultTableView<T> extends VerticalLayout {
         setFlexGrow(1, grid);
 
         buttonLayout.add(new Button("Создать", e -> showCreateForm()));
+        buttonLayout.add(new Button("Изменить фильтр", e -> showFilterForm()));
+        buttonLayout.add(new Button("Очистить фильтр", e -> clearFilter()));
     }
 
     private void addContextMenu() {
@@ -157,6 +165,16 @@ public abstract class DefaultTableView<T> extends VerticalLayout {
         ).open();
     }
 
+    protected void showFilterForm() {
+        new FilterForm<>(
+                entityClass,
+                (Map<Field, Object> newFilterItems) -> {
+                    filterItems = newFilterItems;
+                    refreshData();
+                }
+        ).open();
+    }
+
     protected void showEditForm(T item) {
         new EditForm<>(
                 entityClass,
@@ -179,8 +197,13 @@ public abstract class DefaultTableView<T> extends VerticalLayout {
         ).open();
     }
 
+    protected void clearFilter() {
+        filterItems = null;
+        refreshData();
+    }
+
     protected void refreshData() {
-        List<T> items = genericRepository.findAll();
+        List<T> items = genericRepository.findAll(filterItems);
 
         dataProvider = new ListDataProvider<>(items);
 

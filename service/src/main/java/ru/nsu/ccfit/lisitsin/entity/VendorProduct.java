@@ -2,10 +2,10 @@ package ru.nsu.ccfit.lisitsin.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnView;
-import ru.nsu.ccfit.lisitsin.utils.IdColumn;
-import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableView;
+import ru.nsu.ccfit.lisitsin.annotations.ColumnView;
+import ru.nsu.ccfit.lisitsin.annotations.IdColumn;
+import ru.nsu.ccfit.lisitsin.annotations.LinkTableView;
+import ru.nsu.ccfit.lisitsin.annotations.TableView;
 
 @TableView(viewName = "Товары поставщиков", tableName = "vendor_product", order = 9)
 @Getter

@@ -14,10 +14,7 @@ public class DepartmentToTradingPointRepository extends GenericRepository<Depart
 
     @Override
     public void create(Object... params) {
-        jdbcTemplate.update(
-                "CALL add_department_to_trading_point(?, ?)",
-                params
-        );
+        jdbcTemplate.update("CALL add_department_to_trading_point(?, ?)", params);
     }
 
 }

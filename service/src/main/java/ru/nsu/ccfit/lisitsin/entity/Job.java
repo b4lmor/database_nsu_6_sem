@@ -2,11 +2,11 @@ package ru.nsu.ccfit.lisitsin.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.nsu.ccfit.lisitsin.utils.ColumnView;
-import ru.nsu.ccfit.lisitsin.utils.EnumColumn;
-import ru.nsu.ccfit.lisitsin.utils.IdColumn;
-import ru.nsu.ccfit.lisitsin.utils.LinkTableView;
-import ru.nsu.ccfit.lisitsin.utils.TableView;
+import ru.nsu.ccfit.lisitsin.annotations.ColumnView;
+import ru.nsu.ccfit.lisitsin.annotations.EnumColumn;
+import ru.nsu.ccfit.lisitsin.annotations.IdColumn;
+import ru.nsu.ccfit.lisitsin.annotations.LinkTableView;
+import ru.nsu.ccfit.lisitsin.annotations.TableView;
 
 import java.time.LocalDate;
 
@@ -36,7 +36,7 @@ public class Job {
     @ColumnView(viewName = "Зарплата", columnName = "salary")
     private Double salary;
 
-    @EnumColumn(JobTitle.class)
+    @EnumColumn(value = JobTitle.class, enumName = "job_title_type")
     @ColumnView(viewName = "Должность", columnName = "job_title")
     private String jobTitle;
 

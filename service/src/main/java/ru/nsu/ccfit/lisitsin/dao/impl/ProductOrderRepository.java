@@ -18,4 +18,12 @@ public class ProductOrderRepository extends GenericRepository<ProductOrder> {
     public void update(List<Object> params) {
         throw new RuntimeException("Недоступная операция");
     }
+
+    public void confirmOrder(long id) {
+        jdbcTemplate.update("CALL confirm_order(?)", id);
+    }
+
+    public void acceptOrder(long id) {
+        jdbcTemplate.update("CALL accept_order(?)", id);
+    }
 }

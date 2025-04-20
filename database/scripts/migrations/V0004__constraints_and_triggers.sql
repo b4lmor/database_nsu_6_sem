@@ -157,8 +157,8 @@ EXECUTE FUNCTION update_previous_job_end_date();
 CREATE OR REPLACE FUNCTION clear_manager_id_on_role_change()
     RETURNS TRIGGER AS $$
 BEGIN
-    IF (TG_OP = 'UPDATE' AND OLD.job_title = 'manager' AND (NEW.job_title != 'manager' OR NEW.tp_id != OLD.tp_id)) OR
-       (TG_OP = 'DELETE' AND OLD.job_title = 'manager') THEN
+    IF (TG_OP = 'UPDATE' AND OLD.job_title::text = 'MANAGER' AND (NEW.job_title::text != 'MANAGER' OR NEW.tp_id != OLD.tp_id)) OR
+       (TG_OP = 'DELETE' AND OLD.job_title::text = 'MANAGER') THEN
 
         UPDATE trading_point
         SET manager_id = NULL

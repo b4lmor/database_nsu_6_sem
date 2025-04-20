@@ -246,11 +246,27 @@ group by p.article, ci.id
     данной торговой точке.
 
 ```sql
-
+select ci, count(s.id) as "Количество покупок"
+from client_info ci
+         join public.sale s on ci.id = s.client_info_id
+         join public.trading_point_product tpp on tpp.id = s.tpp_id
+         join public.trading_point tp on tpp.tp_id = tp.id
+         join public.trading_point_building tpb on tp.tpb_id = tpb.id
+where tp_type = 'DEPARTMENT_STORE'
+  and tp.id = 1
+group by ci.id
+order by count(s.id) desc
 ```
 
 15. Получить данные о товарообороте торговой точки, либо всех торговых определенной группы за указанный период.                                                                                                                                      
 
 ```sql
-
+select sum(s.sale_count * pi.price) as "Выручка", count(s.id) as "Кол-во сделок"
+from sale s
+         join public.trading_point_product tpp on s.tpp_id = tpp.id
+         join public.product_info pi on pi.id = tpp.product_info_id
+         join public.trading_point tp on tp.id = tpp.tp_id
+         join public.trading_point_building tpb on tpb.id = tp.tpb_id
+where tp.id = 1
+group by tp.id
 ```
