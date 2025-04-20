@@ -8,6 +8,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.ReflectionUtils;
+import ru.nsu.ccfit.lisitsin.annotations.ColumnView;
+import ru.nsu.ccfit.lisitsin.annotations.LinkTableView;
 import ru.nsu.ccfit.lisitsin.dao.GenericRepository;
 import ru.nsu.ccfit.lisitsin.forms.CreateForm;
 import ru.nsu.ccfit.lisitsin.forms.DefaultForm;
@@ -16,9 +18,6 @@ import ru.nsu.ccfit.lisitsin.forms.EditForm;
 import ru.nsu.ccfit.lisitsin.forms.FilterForm;
 import ru.nsu.ccfit.lisitsin.forms.FormBuilder;
 import ru.nsu.ccfit.lisitsin.forms.ObjectViewForm;
-import ru.nsu.ccfit.lisitsin.forms.ViewForm;
-import ru.nsu.ccfit.lisitsin.annotations.ColumnView;
-import ru.nsu.ccfit.lisitsin.annotations.LinkTableView;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -152,7 +151,7 @@ public abstract class DefaultTableView<T> extends VerticalLayout {
     }
 
     private void showViewForm(T item) {
-        new ViewForm<>(entityClass, item).open();
+        new ObjectViewForm<>(entityClass, item).open();
     }
 
     protected void showCreateForm() {

@@ -47,11 +47,7 @@ CREATE TRIGGER trg_update_order_status
     FOR EACH ROW
 EXECUTE FUNCTION update_order_status();
 
--- 2. Триггер для автоматического обновления даты продажи товара
-
--- TODO remove
-
--- 3. Триггер для проверки, что отдел принадлежит зданию торговой точки
+-- 2. Триггер для проверки, что отдел принадлежит зданию торговой точки
 
 CREATE OR REPLACE FUNCTION check_department_building()
     RETURNS TRIGGER AS
@@ -73,7 +69,7 @@ CREATE TRIGGER trg_check_department_building
     FOR EACH ROW
 EXECUTE FUNCTION check_department_building();
 
--- 4. Триггер для проверки, что поставщик имеет достаточное кол-во товара
+-- 3. Триггер для проверки, что поставщик имеет достаточное кол-во товара
 
 CREATE OR REPLACE FUNCTION check_vendor_product_availability()
     RETURNS TRIGGER AS
@@ -108,7 +104,7 @@ CREATE TRIGGER trg_check_vendor_product_availability
     FOR EACH ROW
 EXECUTE FUNCTION check_vendor_product_availability();
 
--- 5. Триггер для проверки, что ТП, привязанная к секции - часть универмага
+-- 4. Триггер для проверки, что ТП, привязанная к секции - часть универмага
 
 CREATE OR REPLACE FUNCTION check_tp_is_department_store()
     RETURNS TRIGGER AS
@@ -132,7 +128,7 @@ CREATE TRIGGER trg_check_tp_is_department_store
     FOR EACH ROW
 EXECUTE FUNCTION check_tp_is_department_store();
 
--- 6. Триггер для установки end_date для старой должности при добавлении новой
+-- 5. Триггер для установки end_date для старой должности при добавлении новой
 
 CREATE OR REPLACE FUNCTION update_previous_job_end_date()
     RETURNS TRIGGER AS $$
@@ -152,7 +148,7 @@ CREATE TRIGGER set_previous_job_end_date
     FOR EACH ROW
 EXECUTE FUNCTION update_previous_job_end_date();
 
--- 7. Триггер для установки manager_id в null при изменении/удалении роли менеджера
+-- 6. Триггер для установки manager_id в null при изменении/удалении роли менеджера
 
 CREATE OR REPLACE FUNCTION clear_manager_id_on_role_change()
     RETURNS TRIGGER AS $$

@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS department_to_trading_point
 
 CREATE TABLE IF NOT EXISTS product
 (
-    article     VARCHAR(60) PRIMARY KEY,
+    article     VARCHAR(60) PRIMARY KEY CHECK (LENGTH(article) >= 4),
     name        VARCHAR(60),
     description TEXT,
     photo_url   TEXT

@@ -39,7 +39,7 @@ public class FilterForm<T> extends DefaultForm {
                 if (enumAnnotation != null) {
                     Class<?> enumClass = enumAnnotation.value();
                     inputField = getSelectorForEnum(enumClass);
-                    inputSuppliers.put(field, () -> inputField.getValue().toString());
+                    inputSuppliers.put(field, () -> inputField.getValue() == null ? null : inputField.getValue().toString());
 
                 } else {
                     inputField = INPUT_FIELD_MAPPER.get(field.getType()).apply(columnView.viewName());
