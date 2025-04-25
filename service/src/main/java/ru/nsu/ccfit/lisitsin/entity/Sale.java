@@ -7,8 +7,6 @@ import ru.nsu.ccfit.lisitsin.annotations.IdColumn;
 import ru.nsu.ccfit.lisitsin.annotations.LinkTableView;
 import ru.nsu.ccfit.lisitsin.annotations.TableView;
 
-import java.time.LocalDate;
-
 @TableView(viewName = "Продажи", tableName = "sale", order = 12)
 @Getter
 @Setter
@@ -32,8 +30,5 @@ public class Sale {
 
     @ColumnView(viewName = "Кол-во продаж (за раз)", columnName = "sale_count")
     private Integer saleCount;
-
-    @ColumnView(viewName = "Дата продажи", columnName = "created_at", isEditable = false, isCreationRequired = false)
-    private LocalDate createdAt;
 
 }

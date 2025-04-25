@@ -1,3 +1,11 @@
 article,name,description,photo_url
-12345,"Товар 1","Описание товара 1","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"
-67890,"Товар 2","Описание товара 2","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"
+furniture_10001,"Стол обеденный","Качественный обеденный стол из дерева","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"
+furniture_10002,"Кресло","Удобное кресло для отдыха","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"
+furniture_10003,"Шкаф","Просторный шкаф для одежды","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"
+furniture_10004,"Кровать","Удобная двуспальная кровать","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"
+furniture_10005,"Тумбочка","Небольшая тумбочка для спальни","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"
+furniture_10006,"Столик журнальный","Журнальный столик для гостиной","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"
+furniture_10007,"Полка","Настенная полка для книг","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"
+furniture_10008,"Диван","Удобный диван для гостиной","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"
+furniture_10009,"Стул","Эргономичный стул для рабочего места","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"
+furniture_10010,"Комод","Комод с несколькими ящиками","https://i.pinimg.com/736x/d0/9f/9b/d09f9b556b006e19e5cf157bd18e30f2.jpg"

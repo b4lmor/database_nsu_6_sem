@@ -1,12 +1,15 @@
-package ru.nsu.ccfit.lisitsin.tableview;
+package ru.nsu.ccfit.lisitsin.view.table;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.util.ReflectionUtils;
 import ru.nsu.ccfit.lisitsin.annotations.ColumnView;
 import ru.nsu.ccfit.lisitsin.annotations.LinkTableView;
@@ -68,9 +71,6 @@ public abstract class DefaultTableView<T> extends VerticalLayout {
         configureGrid(grid);
         addContextMenu();
 
-        refreshData();
-
-        buttonLayout.setSpacing(true);
 
         Button backButton = new Button("На главную");
         backButton.addClickListener(e -> getUI().ifPresent(ui -> ui.navigate("")));
@@ -78,6 +78,14 @@ public abstract class DefaultTableView<T> extends VerticalLayout {
         HorizontalLayout bottomLayout = new HorizontalLayout(backButton);
         bottomLayout.setWidthFull();
         bottomLayout.setJustifyContentMode(JustifyContentMode.START);
+
+        add(bottomLayout);
+
+        if (!refreshData()) {
+            return;
+        }
+
+        buttonLayout.setSpacing(true);
 
         add(buttonLayout, grid, bottomLayout);
         setFlexGrow(1, grid);
@@ -201,12 +209,28 @@ public abstract class DefaultTableView<T> extends VerticalLayout {
         refreshData();
     }
 
-    protected void refreshData() {
-        List<T> items = genericRepository.findAll(filterItems);
+    protected boolean refreshData() {
+        try {
+            List<T> items = genericRepository.findAll(filterItems);
+            dataProvider = new ListDataProvider<>(items);
+            grid.setDataProvider(dataProvider);
 
-        dataProvider = new ListDataProvider<>(items);
+            return true;
 
-        grid.setDataProvider(dataProvider);
+        } catch (DataAccessException e) {
+            grid.removeAllColumns();
+            contextMenu.removeAll();
+            buttonLayout.removeAll();
+
+            Notification notification = Notification.show(
+                    "Ошибка: Access denied",
+                    5000,
+                    Notification.Position.MIDDLE
+            );
+            notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+
+            return false;
+        }
     }
 
     private void configureGrid(Grid<T> grid) {

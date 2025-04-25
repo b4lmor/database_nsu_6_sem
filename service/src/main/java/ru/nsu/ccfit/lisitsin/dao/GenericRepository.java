@@ -60,7 +60,7 @@ public abstract class GenericRepository<T> {
         return clazz.getAnnotation(TableView.class).tableName();
     }
 
-    protected String buildDeleteQuery(List<String> idColumns) {
+    private String buildDeleteQuery(List<String> idColumns) {
         StringBuilder sql = new StringBuilder("DELETE FROM ").append(getTableName(entityClass)).append(" WHERE ");
 
         for (int i = 0; i < idColumns.size(); i++) {
@@ -74,7 +74,7 @@ public abstract class GenericRepository<T> {
         return sql.toString();
     }
 
-    protected LinkedHashMap<String, Object> extractIdColumns(T entity) {
+    private LinkedHashMap<String, Object> extractIdColumns(T entity) {
         LinkedHashMap<String, Object> idMap = new LinkedHashMap<>();
 
         ReflectionUtils.doWithFields(entity.getClass(), field -> {
@@ -128,7 +128,7 @@ public abstract class GenericRepository<T> {
         return sqlBuilder.toString();
     }
 
-    protected String buildCreateQuery() {
+    private String buildCreateQuery() {
         List<String> columns = new ArrayList<>();
         List<String> placeholders = new ArrayList<>();
 
@@ -147,7 +147,7 @@ public abstract class GenericRepository<T> {
         );
     }
 
-    protected String buildUpdateQuery() {
+    private String buildUpdateQuery() {
         String tableName = getTableName(entityClass);
 
         List<String> settableColumns = new ArrayList<>();
@@ -187,7 +187,7 @@ public abstract class GenericRepository<T> {
         );
     }
 
-    protected Object[] processFieldBeforeUpdate(List<Object> originalParams) {
+    private Object[] processFieldBeforeUpdate(List<Object> originalParams) {
         List<Integer> idFieldIndices = getIdFieldIndices(entityClass);
         List<Field> fields = Arrays.stream(entityClass.getDeclaredFields())
                 .filter(f -> f.isAnnotationPresent(IdColumn.class) ||

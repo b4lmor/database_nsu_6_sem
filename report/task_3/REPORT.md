@@ -263,7 +263,6 @@
 | tpp_id         | BIGINT    | REFERENCES trading_point_product (id) |
 | seller_id      | INTEGER   | NOT NULL, REFERENCES employee (id)    |
 | sale_count     | INTEGER   | NOT NULL, DEFAULT 1                   |
-| created_at     | TIMESTAMP | DEFAULT NOW()                         |
 | client_info_id | BIGINT    | REFERENCES client_info (id)           |
 
 **Primary Key:** `id`

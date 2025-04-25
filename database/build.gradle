@@ -10,9 +10,9 @@ plugins {
 }
 
 flyway {
-    url = project.properties['db.url']
-    user = project.properties['db.username']
-    password = project.properties['db.password']
+    url = project.properties['dburl']
+    user = 'postgres'
+    password = 'postgres'
     locations = ['filesystem:scripts/migrations']
     cleanDisabled = false
 }

@@ -4,7 +4,7 @@ COPY trading_point_building (address, tp_type, name)
     WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
 -- Заполнение таблицы employee
-COPY employee (full_name, birth_date, hire_date, resignation_date)
+COPY employee (full_name, birth_date, hire_date, resignation_date, login)
     FROM '/volumes/employee.csv'
     WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
@@ -49,7 +49,7 @@ COPY client_info (full_name, birth_date, height, weight, specificity, phone, ema
     WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 
 -- Заполнение таблицы sale
-COPY sale (tpp_id, seller_id, sale_count, created_at, client_info_id)
+COPY sale (tpp_id, seller_id, sale_count, client_info_id)
     FROM '/volumes/sale.csv'
     WITH (FORMAT csv, HEADER true, DELIMITER ',', ENCODING 'UTF8');
 

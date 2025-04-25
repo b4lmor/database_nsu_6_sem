@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.lisitsin.tableview.impl;
+package ru.nsu.ccfit.lisitsin.view.table.impl;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.textfield.IntegerField;
@@ -6,7 +6,7 @@ import com.vaadin.flow.router.Route;
 import ru.nsu.ccfit.lisitsin.dao.impl.ProductOrderRepository;
 import ru.nsu.ccfit.lisitsin.entity.ProductOrder;
 import ru.nsu.ccfit.lisitsin.forms.FormBuilder;
-import ru.nsu.ccfit.lisitsin.tableview.DefaultTableView;
+import ru.nsu.ccfit.lisitsin.view.table.DefaultTableView;
 
 @Route("Заказы товаров")
 public class ProductOrderTableView extends DefaultTableView<ProductOrder> {

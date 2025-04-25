@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.lisitsin;
+package ru.nsu.ccfit.lisitsin.view;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;

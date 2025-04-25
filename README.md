@@ -47,17 +47,10 @@
 
 1. Запустить БД на `postgresql://localhost:5432/postgres` (см. [Докер-компоус файл](database/docker-compose.yml))
 
-2. Запустить приложение 
-`
-./gradlew :service:runApp
-`
+2. Добавить роли (при первом создании БД): [SQL файл](database/scripts/create_roles.sql)
 
-##### Накатить миграции:
-`
-./gradlew flywayMigrate
-`
+3. Запустить приложение `./gradlew :service:runApp`
 
-##### Отменить миграции:
-`
-./gradlew flywayClean
-`
+##### Накатить миграции: `./gradlew flywayMigrate`
+
+##### Отменить миграции: `./gradlew flywayClean`

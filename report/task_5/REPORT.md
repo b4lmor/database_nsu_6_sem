@@ -7,7 +7,7 @@ from vendor v
          join public.product_order po on v.id = po.vendor_id
          join public.product_order_details pod on po.id = pod.product_order_id
          join product p on pod.product_article = p.article
-where article = '12345'
+where article = 'furniture_10001'
   and delivery_date between '1900-01-01' and '2026-01-01'
 group by v.id
 having count(*) >= 1
@@ -22,7 +22,7 @@ from client_info ci
          join public.sale s on ci.id = s.client_info_id
          join public.trading_point_product tpp on s.tpp_id = tpp.id
          join public.product_info pi on pi.id = tpp.product_info_id
-where pi.product_article = '12345'
+where pi.product_article = 'furniture_10001'
   and sell_date between '1900-01-01' and '2026-01-01'
 group by ci.id
 having count(*) >= 1
@@ -56,7 +56,7 @@ from product_info pi
          join public.trading_point_product tpp on pi.id = tpp.product_info_id
          join public.trading_point tp on tp.id = tpp.tp_id
          join public.trading_point_building tpb on tpb.id = tp.tpb_id
-where product_article = '12345'
+where product_article = 'furniture_10001'
   and tp.id = 1
   and tpb.tp_type = 'DEPARTMENT_STORE'
 ```
@@ -128,7 +128,7 @@ from product p
          join public.product_order po on po.id = pod.product_order_id
          join public.vendor_product vp on po.vendor_id = vp.vendor_id
          join public.product_info pi on pi.id = vp.product_info_id
-where p.article = '12345'
+where p.article = 'furniture_10001'
   and vp.vendor_id = 1
   and po.delivery_date between '1900-01-01' and '2026-01-01'
 group by p.article 
@@ -206,13 +206,14 @@ with sell_vol as (select sum(s.sale_count * pi.price)
      months_between as (SELECT (EXTRACT(YEAR FROM age('2026-01-01', '2019-01-01')) * 12 +
                                 EXTRACT(MONTH FROM age('2026-01-01', '2019-01-01'))))
 
-select (select * from sell_vol) / ((sum(j.salary) + tp.rent_payment) * (select * from months_between))
+select (select * from sell_vol) / ((sum(j.salary) + tp.rent_payment) * (select * from months_between)) as "рентабельность"
 from trading_point tp
          join public.job j on tp.id = j.tp_id
          join public.trading_point_product t on tp.id = t.tp_id
          join public.sale s2 on t.id = s2.tpp_id
+        join public.product_info pi on pi.id = t.product_info_id
 where j.end_date is null
-  and s2.created_at between '2019-01-01' and '2026-01-01'
+  and pi.sell_date between '2019-01-01' and '2026-01-01'
 group by tp.id
 ```
 
@@ -238,7 +239,7 @@ from client_info ci
          join public.product_info pi on tpp.product_info_id = pi.id
          join public.product p on pi.product_article = p.article
 where tp_id = 1
-  and s.created_at between '2019-01-01' and '2026-01-01'
+  and pi.sell_date between '2019-01-01' and '2026-01-01'
 group by p.article, ci.id 
 ```
 

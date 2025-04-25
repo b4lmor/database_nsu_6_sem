@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.lisitsin;
+package ru.nsu.ccfit.lisitsin.events;
 
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;

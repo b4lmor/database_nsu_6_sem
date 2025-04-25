@@ -68,7 +68,7 @@ ALTER TABLE vendor
 CREATE POLICY vendor_policy ON vendor
     FOR ALL
     TO vendor
-    USING (id = CURRENT_USER::INT);
+    USING (name = CURRENT_USER);
 -- имя роли совпадает с ID поставщика
 
 -- 2. vendor_product
@@ -78,7 +78,7 @@ ALTER TABLE vendor_product
 CREATE POLICY vendor_product_policy ON vendor_product
     FOR ALL
     TO vendor
-    USING (vendor_id = CURRENT_USER::INT);
+    USING ((select name from vendor v where v.id = vendor_id) = CURRENT_USER);
 
 -- 3. product_order
 ALTER TABLE product_order
@@ -87,7 +87,7 @@ ALTER TABLE product_order
 CREATE POLICY product_order_policy ON product_order
     FOR ALL
     TO vendor
-    USING (vendor_id = CURRENT_USER::INT);
+    USING ((select name from vendor v where v.id = vendor_id) = CURRENT_USER);
 
 -- 4. product_order_details
 ALTER TABLE product_order_details
@@ -98,7 +98,7 @@ CREATE POLICY product_order_details_policy ON product_order_details
     TO vendor
     USING (product_order_id IN (SELECT id
                                 FROM product_order
-                                WHERE vendor_id = CURRENT_USER::INT));
+                                WHERE (select name from vendor v where v.id = vendor_id) = CURRENT_USER));
 
 -- 5. employee
 ALTER TABLE employee
@@ -110,6 +110,6 @@ CREATE POLICY manager_employee_policy ON employee
     EXISTS (SELECT 1
             FROM job
                      JOIN employee AS manager ON job.employee_id = manager.id
-            WHERE manager.id = CURRENT_USER::INT
+            WHERE manager.login = CURRENT_USER
               AND job.job_title = 'MANAGER'::job_title_type
               AND (job.end_date IS NULL OR job.end_date > CURRENT_DATE)));

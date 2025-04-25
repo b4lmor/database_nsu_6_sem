@@ -1,4 +1,4 @@
-package ru.nsu.ccfit.lisitsin.tableview.impl;
+package ru.nsu.ccfit.lisitsin.view.table.impl;
 
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
@@ -7,7 +7,7 @@ import com.vaadin.flow.router.Route;
 import org.springframework.jdbc.core.JdbcTemplate;
 import ru.nsu.ccfit.lisitsin.dao.GenericRepository;
 import ru.nsu.ccfit.lisitsin.entity.Product;
-import ru.nsu.ccfit.lisitsin.tableview.DefaultTableView;
+import ru.nsu.ccfit.lisitsin.view.table.DefaultTableView;
 
 @Route("Товары")
 public class ProductTableView extends DefaultTableView<Product> {

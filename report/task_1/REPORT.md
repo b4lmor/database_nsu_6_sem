@@ -98,7 +98,6 @@
 | id             | Уникальный идентификатор (первичный ключ).                                       |
 | tp_id          | Идентификатор торговой точки (внешний ключ на trading_point).                    |
 | tpp_id         | Идентификатор продукта в торговой точке (внешний ключ на trading_point_product). |
-| created_at     | Дата и время создания продажи.                                                   |
 | client_info_id | Идентификатор client_info                                                        |
 
 ### `client_info`
@@ -341,7 +340,6 @@
 |------------|-----------|-----------------------------------------|
 | id         | BIGSERIAL | PRIMARY KEY                             |
 | tp_id      | INTEGER   | NOT NULL, REFERENCES trading_point (id) |
-| created_at | TIMESTAMP | DEFAULT NOW()                           |
 
 **Primary Key:**`id`
 
