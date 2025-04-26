@@ -2,7 +2,6 @@ package ru.nsu.ccfit.lisitsin.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.util.ReflectionUtils;
 import ru.nsu.ccfit.lisitsin.annotations.ColumnView;
 import ru.nsu.ccfit.lisitsin.annotations.EnumColumn;
@@ -21,27 +20,33 @@ public abstract class GenericRepository<T> {
 
     private static final Object[] EMPTY_PARAMS = new Object[]{};
 
-    protected final JdbcTemplate jdbcTemplate;
+    protected final JdbcTemplateWrapper jdbcTemplateWrapper;
 
     protected final Class<T> entityClass;
 
     public void create(Object... params) {
-        jdbcTemplate.update(buildCreateQuery(), params);
+        jdbcTemplateWrapper.consume(jdbcTemplate -> jdbcTemplate.update(buildCreateQuery(), params));
     }
 
     public List<T> findAll(Map<Field, Object> filterItems) {
-        return jdbcTemplate.query(
-                buildSelectQueryWithFilters(filterItems),
-                new BeanPropertyRowMapper<>(entityClass),
-                filterItems == null ? EMPTY_PARAMS : filterItems.values().toArray()
+        return jdbcTemplateWrapper.produce(
+                jdbcTemplate ->
+                        jdbcTemplate.query(
+                                buildSelectQueryWithFilters(filterItems),
+                                new BeanPropertyRowMapper<>(entityClass),
+                                filterItems == null ? EMPTY_PARAMS : filterItems.values().toArray()
+                        )
         );
     }
 
     public <U> U findByField(Class<U> targetClass, String column, Object value) {
-        return jdbcTemplate.queryForObject(
-                "SELECT * FROM %s WHERE %s = ? LIMIT 1".formatted(getTableName(targetClass), column),
-                new BeanPropertyRowMapper<>(targetClass),
-                value
+        return jdbcTemplateWrapper.produce(
+                jdbcTemplate ->
+                        jdbcTemplate.queryForObject(
+                                "SELECT * FROM %s WHERE %s = ? LIMIT 1".formatted(getTableName(targetClass), column),
+                                new BeanPropertyRowMapper<>(targetClass),
+                                value
+                        )
         );
     }
 
@@ -49,11 +54,16 @@ public abstract class GenericRepository<T> {
         LinkedHashMap<String, Object> ids = extractIdColumns(entity);
         List<String> idColumns = ids.keySet().stream().toList();
 
-        jdbcTemplate.update(buildDeleteQuery(idColumns), idColumns.stream().map(ids::get).toArray());
+        jdbcTemplateWrapper.consume(
+                jdbcTemplate ->
+                jdbcTemplate.update(buildDeleteQuery(idColumns), idColumns.stream().map(ids::get).toArray())
+        );
     }
 
     public void update(List<Object> params) {
-        jdbcTemplate.update(buildUpdateQuery(), processFieldBeforeUpdate(params));
+        jdbcTemplateWrapper.consume(
+                jdbcTemplate -> jdbcTemplate.update(buildUpdateQuery(), processFieldBeforeUpdate(params))
+        );
     }
 
     protected String getTableName(Class<?> clazz) {
@@ -136,7 +146,13 @@ public abstract class GenericRepository<T> {
             ColumnView columnView = field.getAnnotation(ColumnView.class);
             if (columnView != null && columnView.isCreationRequired()) {
                 columns.add(columnView.columnName());
-                placeholders.add("?");
+
+                if (field.isAnnotationPresent(EnumColumn.class)) {
+                    placeholders.add("?::" + field.getAnnotation(EnumColumn.class).enumName());
+
+                } else {
+                    placeholders.add("?");
+                }
             }
         });
 

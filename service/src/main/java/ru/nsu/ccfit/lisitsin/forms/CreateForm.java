@@ -37,13 +37,14 @@ public class CreateForm extends DefaultForm {
                 if (enumAnnotation != null) {
                     Class<?> enumClass = enumAnnotation.value();
                     inputField = getSelectorForEnum(enumClass);
+                    inputSuppliers.add(() -> inputField.getValue() == null ? null : inputField.getValue().toString());
 
                 } else {
-                     inputField = INPUT_FIELD_MAPPER.get(field.getType()).apply(columnView.viewName());
+                    inputField = INPUT_FIELD_MAPPER.get(field.getType()).apply(columnView.viewName());
+                    inputSuppliers.add(inputField::getValue);
                 }
 
                 form.add(inputField);
-                inputSuppliers.add(inputField::getValue);
             });
 
             Button saveButton = new Button(

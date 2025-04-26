@@ -4,16 +4,16 @@ import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.router.Route;
-import org.springframework.jdbc.core.JdbcTemplate;
 import ru.nsu.ccfit.lisitsin.dao.GenericRepository;
+import ru.nsu.ccfit.lisitsin.dao.JdbcTemplateWrapper;
 import ru.nsu.ccfit.lisitsin.entity.Product;
 import ru.nsu.ccfit.lisitsin.view.table.DefaultTableView;
 
 @Route("Товары")
 public class ProductTableView extends DefaultTableView<Product> {
 
-    public ProductTableView(JdbcTemplate jdbcTemplate) {
-        super(Product.class, new GenericRepository<>(jdbcTemplate, Product.class) {});
+    public ProductTableView(JdbcTemplateWrapper jdbcTemplateWrapper) {
+        super(Product.class, new GenericRepository<>(jdbcTemplateWrapper, Product.class) {});
 
         grid.addColumn(
                 new ComponentRenderer<>(

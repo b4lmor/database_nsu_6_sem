@@ -3,7 +3,7 @@ package ru.nsu.ccfit.lisitsin.view.table.impl;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.textfield.IntegerField;
 import com.vaadin.flow.router.Route;
-import org.springframework.jdbc.core.JdbcTemplate;
+import ru.nsu.ccfit.lisitsin.dao.JdbcTemplateWrapper;
 import ru.nsu.ccfit.lisitsin.dao.impl.TradingPointRepository;
 import ru.nsu.ccfit.lisitsin.entity.TradingPoint;
 import ru.nsu.ccfit.lisitsin.forms.FormBuilder;
@@ -14,8 +14,8 @@ public class TradingPointTableView extends DefaultTableView<TradingPoint> {
 
     private final TradingPointRepository tradingPointRepository;
 
-    public TradingPointTableView(JdbcTemplate jdbcTemplate) {
-        super(TradingPoint.class, new TradingPointRepository(jdbcTemplate));
+    public TradingPointTableView(JdbcTemplateWrapper jdbcTemplateWrapper) {
+        super(TradingPoint.class, new TradingPointRepository(jdbcTemplateWrapper));
         this.tradingPointRepository = (TradingPointRepository) this.genericRepository;
 
         registerForm("Прикрепить к секции", updateDepartmentForm());

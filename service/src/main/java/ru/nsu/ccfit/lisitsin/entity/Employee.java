@@ -29,4 +29,7 @@ public class Employee {
     @ColumnView(viewName = "Дата увольнения", columnName = "resignation_date", isCreationRequired = false)
     private LocalDate resignationDate;
 
+    @ColumnView(viewName = "Логин учётной записи", columnName = "login")
+    private String login;
+
 }

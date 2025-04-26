@@ -10,7 +10,7 @@ plugins {
 }
 
 flyway {
-    url = project.properties['dburl']
+    url = 'jdbc:postgresql://localhost:5432/postgres'
     user = 'postgres'
     password = 'postgres'
     locations = ['filesystem:scripts/migrations']

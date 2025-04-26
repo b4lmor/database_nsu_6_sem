@@ -41,16 +41,22 @@
 - __docker-compose.yml__ - докер-компоус файл для поднятия postgres
 - __build.gradle__ - файл, описывающий применение миграций через gradle
 
-#### Сборка и gradle task'и
-
 ##### Запустить приложение
 
-1. Запустить БД на `postgresql://localhost:5432/postgres` (см. [Докер-компоус файл](database/docker-compose.yml))
+1. Запустить БД (см. [Докер-компоус файл](database/docker-compose.yml))
 
-2. Добавить роли (при первом создании БД): [SQL файл](database/scripts/create_roles.sql)
+2. Чтобы инициализировать роли при первом запуске БД, нужно выполнить [SQL файл](database/scripts/create_roles.sql)
 
 3. Запустить приложение `./gradlew :service:runApp`
 
-##### Накатить миграции: `./gradlew flywayMigrate`
+### Миграции
+
+- Процесс миграции запускается **супер-пользователем**
+- Это происходит **ДО** запуска приложения
+- Для старта миграций нужно ввести **url**, **username** и **password** в [Конфигурационном файле](./database/build.gradle)
+
+##### Запустить процесс миграции: `./gradlew flywayMigrate`
 
 ##### Отменить миграции: `./gradlew flywayClean`
+
+##### Отменить + Запустить миграции: `./gradlew flywayCleanAndMigrate`

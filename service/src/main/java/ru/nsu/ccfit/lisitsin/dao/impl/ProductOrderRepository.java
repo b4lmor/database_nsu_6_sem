@@ -1,8 +1,8 @@
 package ru.nsu.ccfit.lisitsin.dao.impl;
 
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.nsu.ccfit.lisitsin.dao.GenericRepository;
+import ru.nsu.ccfit.lisitsin.dao.JdbcTemplateWrapper;
 import ru.nsu.ccfit.lisitsin.entity.ProductOrder;
 
 import java.util.List;
@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public class ProductOrderRepository extends GenericRepository<ProductOrder> {
 
-    public ProductOrderRepository(JdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate, ProductOrder.class);
+    public ProductOrderRepository(JdbcTemplateWrapper jdbcTemplateWrapper) {
+        super(jdbcTemplateWrapper, ProductOrder.class);
     }
 
     @Override
@@ -20,10 +20,10 @@ public class ProductOrderRepository extends GenericRepository<ProductOrder> {
     }
 
     public void confirmOrder(long id) {
-        jdbcTemplate.update("CALL confirm_order(?)", id);
+        jdbcTemplateWrapper.consume(jdbcTemplate -> jdbcTemplate.update("CALL confirm_order(?)", id));
     }
 
     public void acceptOrder(long id) {
-        jdbcTemplate.update("CALL accept_order(?)", id);
+        jdbcTemplateWrapper.consume(jdbcTemplate -> jdbcTemplate.update("CALL accept_order(?)", id));
     }
 }
