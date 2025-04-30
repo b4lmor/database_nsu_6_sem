@@ -20,6 +20,10 @@ public class VendorProduct {
     @ColumnView(viewName = "ID Поставщика", columnName = "vendor_id")
     private Integer vendorId;
 
+    @LinkTableView(linkClass = ProductOrder.class)
+    @ColumnView(viewName = "ID Заказа", columnName = "reservedBy")
+    private Integer reservedBy;
+
     @LinkTableView(linkClass = ProductInfo.class)
     @ColumnView(viewName = "ID Информации о товаре", columnName = "product_info_id")
     private Long productInfoId;

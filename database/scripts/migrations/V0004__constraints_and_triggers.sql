@@ -1,9 +1,10 @@
 ALTER TABLE product_info
     ADD CONSTRAINT check_price_non_negative CHECK (price >= 0),
-    ADD CONSTRAINT check_date_order CHECK(sell_date >= delivery_date);
+    ADD CONSTRAINT check_date_order CHECK (sell_date IS NULL OR sell_date > delivery_date);
 
 ALTER TABLE employee
-    ADD CONSTRAINT check_date_order CHECK(resignation_date >= hire_date);
+    ADD CONSTRAINT check_date_order CHECK (resignation_date > hire_date),
+    ADD CONSTRAINT check_employee_adult CHECK (EXTRACT(YEAR FROM AGE(hire_date, birth_date)) >= 18);
 
 ALTER TABLE product_order_details
     ADD CONSTRAINT check_product_count_non_negative CHECK (product_count >= 0);
@@ -34,9 +35,11 @@ $$
 BEGIN
     IF NEW.confirm_date IS NOT NULL AND NEW.order_status = 'ORDERED' THEN
         NEW.order_status := 'CONFIRMED';
+
     ELSIF NEW.delivery_date IS NOT NULL AND NEW.order_status = 'CONFIRMED' THEN
         NEW.order_status := 'DELIVERED';
     END IF;
+
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -75,19 +78,21 @@ CREATE OR REPLACE FUNCTION check_vendor_product_availability()
     RETURNS TRIGGER AS
 $$
 DECLARE
+    original_vendor_id   INTEGER;
     vendor_product_count INTEGER;
 BEGIN
-    IF (SELECT vendor_id FROM product_order WHERE id = NEW.product_order_id) IS NOT NULL THEN
+    IF (SELECT vendor_id INTO original_vendor_id FROM product_order WHERE id = NEW.product_order_id) IS NOT NULL THEN
 
         SELECT COUNT(*)
         INTO vendor_product_count
         FROM vendor_product
-        WHERE vendor_id = (SELECT vendor_id FROM product_order WHERE id = NEW.product_order_id)
+        WHERE vendor_product.reserved_by IS NULL
+          AND vendor_id = original_vendor_id
           AND product_info_id = (SELECT id FROM product_info WHERE product_article = NEW.product_article);
 
         IF vendor_product_count < NEW.product_count THEN
             RAISE EXCEPTION 'Not enough products available from the vendor (Vendor ID: %, Product Article: %, Required: %, Available: %)',
-                    (SELECT vendor_id FROM product_order WHERE id = NEW.product_order_id),
+                original_vendor_id,
                 NEW.product_article,
                 NEW.product_count,
                 vendor_product_count;
@@ -131,7 +136,8 @@ EXECUTE FUNCTION check_tp_is_department_store();
 -- 5. Триггер для установки end_date для старой должности при добавлении новой
 
 CREATE OR REPLACE FUNCTION update_previous_job_end_date()
-    RETURNS TRIGGER AS $$
+    RETURNS TRIGGER AS
+$$
 BEGIN
     UPDATE job
     SET end_date = NEW.start_date
@@ -143,17 +149,20 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER set_previous_job_end_date
-    BEFORE INSERT OR UPDATE ON job
+CREATE TRIGGER trg_set_previous_job_end_date
+    BEFORE INSERT OR UPDATE
+    ON job
     FOR EACH ROW
 EXECUTE FUNCTION update_previous_job_end_date();
 
 -- 6. Триггер для установки manager_id в null при изменении/удалении роли менеджера
 
 CREATE OR REPLACE FUNCTION clear_manager_id_on_role_change()
-    RETURNS TRIGGER AS $$
+    RETURNS TRIGGER AS
+$$
 BEGIN
-    IF (TG_OP = 'UPDATE' AND OLD.job_title::text = 'MANAGER' AND (NEW.job_title::text != 'MANAGER' OR NEW.tp_id != OLD.tp_id)) OR
+    IF (TG_OP = 'UPDATE' AND OLD.job_title::text = 'MANAGER' AND
+        (NEW.job_title::text != 'MANAGER' OR NEW.tp_id != OLD.tp_id)) OR
        (TG_OP = 'DELETE' AND OLD.job_title::text = 'MANAGER') THEN
 
         UPDATE trading_point
@@ -166,8 +175,37 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER clear_manager_id_trigger
-    AFTER UPDATE OR DELETE ON job
+CREATE TRIGGER trg_clear_manager_id_trigger
+    AFTER UPDATE OR DELETE
+    ON job
     FOR EACH ROW
 EXECUTE FUNCTION clear_manager_id_on_role_change();
+
+-- 7. Триггер для установки reserved_by у vendor_id при изменении статуса product_order на CONFIRMED
+
+CREATE OR REPLACE FUNCTION update_vendor_product()
+    RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.order_status = 'CONFIRMED' AND (OLD.order_status IS DISTINCT FROM NEW.order_status) THEN
+
+        -- Обновляем vendor_product.reserved_by для всех товаров в этом заказе
+        UPDATE vendor_product vp
+        SET reserved_by = NEW.id
+        FROM product_order_details pod
+                 JOIN product_info pi ON pod.product_article = pi.product_article
+        WHERE pod.product_order_id = NEW.id
+          AND vp.product_info_id = pi.id
+          AND vp.vendor_id = NEW.vendor_id
+          AND vp.reserved_by IS NULL;
+
+    END IF;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trg_product_order_status_changed
+    BEFORE UPDATE ON product_order
+    FOR EACH ROW
+EXECUTE FUNCTION update_vendor_product();
 

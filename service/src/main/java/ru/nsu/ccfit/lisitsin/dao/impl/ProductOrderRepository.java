@@ -20,7 +20,16 @@ public class ProductOrderRepository extends GenericRepository<ProductOrder> {
     }
 
     public void confirmOrder(long id) {
-        jdbcTemplateWrapper.consume(jdbcTemplate -> jdbcTemplate.update("CALL confirm_order(?)", id));
+        jdbcTemplateWrapper.consume(jdbcTemplate ->
+                jdbcTemplate.update(
+                        """
+                                BEGIN;
+                                SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+                                CALL confirm_order(?);
+                                COMMIT;""",
+                        id
+                )
+        );
     }
 
     public void acceptOrder(long id) {

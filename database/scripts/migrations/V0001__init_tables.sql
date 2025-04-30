@@ -135,13 +135,6 @@ CREATE TABLE IF NOT EXISTS vendor
     UNIQUE (name, address)
 );
 
-CREATE TABLE IF NOT EXISTS vendor_product
-(
-    id              BIGSERIAL PRIMARY KEY,
-    vendor_id       INTEGER REFERENCES vendor (id) ON DELETE CASCADE,
-    product_info_id BIGINT NOT NULL REFERENCES product_info (id) ON DELETE CASCADE
-);
-
 CREATE TABLE IF NOT EXISTS product_order
 (
     id            BIGSERIAL PRIMARY KEY,
@@ -152,6 +145,14 @@ CREATE TABLE IF NOT EXISTS product_order
     create_date   TIMESTAMP                 NOT NULL DEFAULT NOW(),
     confirm_date  TIMESTAMP,
     delivery_date TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS vendor_product
+(
+    id              BIGSERIAL PRIMARY KEY,
+    vendor_id       INTEGER REFERENCES vendor (id) ON DELETE CASCADE,
+    reserved_by     INTEGER REFERENCES product_order (id),
+    product_info_id BIGINT NOT NULL REFERENCES product_info (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS product_order_details
