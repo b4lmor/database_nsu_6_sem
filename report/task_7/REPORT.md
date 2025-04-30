@@ -126,7 +126,8 @@ public void confirmOrder(long id) {
                     BEGIN;
                     SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
                     CALL confirm_order(?);
-                    COMMIT;""",
+                    COMMIT;
+                    """,
                     id
             )
     );
