@@ -1,6 +1,7 @@
 package ru.nsu.ccfit.lisitsin.dao;
 
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,6 +23,12 @@ public class JdbcTemplateWrapper {
     @Value("${spring.datasource.driver-class-name}")
     private String dataSourceDriver;
 
+    @Value("${spring.datasource.hikari.maximum-pool-size}")
+    private Integer maximumPoolSize;
+
+    @Value("${spring.datasource.hikari.connection-timeout}")
+    private Integer connectionTimeout;
+
     public void connect(String username, String password) {
         close();
 
@@ -33,8 +40,8 @@ public class JdbcTemplateWrapper {
             dataSource.setJdbcUrl(dataSourceUrl);
             dataSource.setUsername(username);
             dataSource.setPassword(password);
-            dataSource.setMaximumPoolSize(5);
-            dataSource.setConnectionTimeout(5000);
+            dataSource.setMaximumPoolSize(maximumPoolSize);
+            dataSource.setConnectionTimeout(connectionTimeout);
 
             try (Connection ignored = dataSource.getConnection()) {
                 jdbcTemplate = new JdbcTemplate(dataSource);
@@ -98,4 +105,8 @@ public class JdbcTemplateWrapper {
         }
     }
 
+    @PreDestroy
+    private void destroy() {
+        close();
+    }
 }
